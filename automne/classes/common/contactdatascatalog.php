@@ -33,7 +33,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return CMS_contactData or null
 	  * @access public
 	  */
-	static function getById($data)
+	public static function getById($data)
 	{
 		if (SensitiveIO::isPositiveInteger($data) || is_array($data)) {
 			$obj = new CMS_contactData($data);
@@ -51,7 +51,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return array of CMS_profile_user
 	  * @access public
 	  */
-	static function getByEmail($data)
+	public static function getByEmail($data)
 	{
 		if (!SensitiveIO::isValidEmail($data) ) {
 			 CMS_grandFather::raiseError('$data must be a valid email : '.$data);
@@ -90,7 +90,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return CMS_contactData
 	  * @access public
 	  */
-	static function getByUser($data)
+	public static function getByUser($data)
 	{
 		if (is_array($data)) {
 			return CMS_contactDatas_catalog::getById($data);

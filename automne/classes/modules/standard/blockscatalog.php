@@ -160,7 +160,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 	  * @param boolean $public, if only public datas are concerned
 	  * @return array of CMS_block
 	  */
-	static function getAllBlocksForPage(&$page, $public=false)
+	public static function getAllBlocksForPage(&$page, $public=false)
 	{
 		$_blocks = array();
 		//@var : array ( array(Table prefix, Class name) )

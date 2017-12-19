@@ -4,7 +4,7 @@
   *
   * @package CMS
   * @subpackage CKEditor
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author S?astien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author CKSource - Frederico Knabben.
   */
 
@@ -16,7 +16,7 @@
 		var plugin = CKEDITOR.plugins.polymod;
 		
 		var commonLang = editor.lang.common,
-			polymodLang = editor.lang.polymod;
+			polymodLang = editor.lang.polymod.polymod;
 	
 		return {
 			title : polymodLang.title,

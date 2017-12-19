@@ -169,7 +169,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
@@ -217,7 +217,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		global $cms_user;
 		$params = $this->getParamsValues();
@@ -318,7 +318,7 @@ class CMS_object_usergroup extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		global $cms_user;
 		$html = '';
 		$params = $this->getParamsValues();
@@ -455,7 +455,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values, $prefixName, $newFormat = false) {
+	public function checkMandatory($values, $prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		//if field is required check values
 		if (!$params['isCurrentUser'] && !$params['creationUser'] && $this->_field->getValue('required')) {
@@ -474,7 +474,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0']) || $params['isCurrentUser'] || $params['creationUser']) {
 			// If params : set userID
@@ -531,7 +531,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setSubFieldsDefinition($subFieldsDefinition) {
+	public function setSubFieldsDefinition($subFieldsDefinition) {
 		foreach(array_keys($this->_subfieldValues) as $subFieldID) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				$subFieldsDefinition[0]['subFieldID'] = $subFieldID;
@@ -549,7 +549,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return array, the treated datas
 	  * @access public
 	  */
-	function treatParams($post, $prefix) {
+	public function treatParams($post, $prefix) {
 		$params = parent::treatParams($post, $prefix);
 		//if isCurrentUser parameter is selected, then the two others parameters can't be checked
 		if ($params['isCurrentUser']) {
@@ -565,7 +565,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		$params = $this->getParamsValues();
 		$labels = array();
 		foreach (array_keys($this->_subfieldValues) as $subFieldID) {
@@ -589,7 +589,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		if ($this->_public) {
 			$this->setError("Can't write public object");
 			return false;
@@ -609,7 +609,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		$params = $this->getParamsValues();
 		unset($structure['value']);
@@ -641,7 +641,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		global $cms_language;
 		$params = $this->getParamsValues();
 		$name = ($name !== 0) ? $name : "0";
@@ -726,7 +726,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
@@ -762,7 +762,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return string : options tag list
 	  * @access public
 	  */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		$usersGroups = $this->getListOfNamesForObject();
 		$return = "";
 		if (is_array($usersGroups) && $usersGroups) {
@@ -785,7 +785,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		if (!is_array($value)) {
 			$value = array($value);
@@ -812,7 +812,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($public = false, $searchConditions = array()) {
+	public function getListOfNamesForObject($public = false, $searchConditions = array()) {
 		$params = $this->getParamsValues();
 		//load user/group
 		$userGroupSorted = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getGroupsLabels() : CMS_profile_usersCatalog::getUsersLabels(true, true);
@@ -899,7 +899,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersDisableUsers($language, $prefixName) {
+	public function getHTMLSubFieldsParametersDisableUsers($language, $prefixName) {
 		$params = $this->getParamsValues();
 		$values = $this->_parameterValues;
 		$input = '';
@@ -952,7 +952,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersDisableGroups($language, $prefixName) {
+	public function getHTMLSubFieldsParametersDisableGroups($language, $prefixName) {
 		$params = $this->getParamsValues();
 		$values = $this->_parameterValues;
 		$input = '';
@@ -1010,7 +1010,7 @@ class CMS_object_usergroup extends CMS_object_common
       * @return string : the SQL request
       * @access public
       */
-	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+	public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		//operators are not supported for now : TODO
 		$supportedOperator = array();

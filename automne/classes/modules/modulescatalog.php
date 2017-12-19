@@ -35,7 +35,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return CMS_module The module wanted
 	  * @access public
 	  */
-	static function getByCodename($datas)
+	public static function getByCodename($datas)
 	{
 		static $modules;
 		if (is_string($datas)) {
@@ -103,7 +103,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return array(CMS_module) All the available modules sorted by label
 	  * @access public
 	  */
-	static function getAll($orderBy="label", $polymodOnly = false, $reset = false)
+	public static function getAll($orderBy="label", $polymodOnly = false, $reset = false)
 	{
 		static $modules;
 		$hash = md5(serialize(func_get_args()));
@@ -171,7 +171,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return array(codename => codename)
 	  * @access public
 	  */
-	static function getAllCodenames($reset = false) {
+	public static function getAllCodenames($reset = false) {
 		static $codenames;
 		if (!$reset && $codenames) {
 			return $codenames;
@@ -197,7 +197,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return boolean true if yes, false otherwise
 	  * @access public
 	  */
-	static function isPolymod($codename) {
+	public static function isPolymod($codename) {
 		$sql = "select
 					1
 				from
@@ -217,7 +217,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return array(array(string=>CMS_resourceValidation)) All the available validations in an array where each elements are the validations array indexed by the module codename
 	  * @access public
 	  */
-	static function getAllValidations(&$user, $light=false)
+	public static function getAllValidations(&$user, $light=false)
 	{
 		$modules = CMS_modulesCatalog::getAll();
 		$all_validations = array();
@@ -247,7 +247,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	static function getValidationsCount(&$user)
+	public static function getValidationsCount(&$user)
 	{
 		$modules = CMS_modulesCatalog::getAll();
 		$validationsCount = 0;
@@ -281,7 +281,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	static function moveResourceData(&$module, $tablesPrefix, $resourceIDFieldName, $resourceID, $locationFrom, $locationTo, $copyOnly = false)
+	public static function moveResourceData(&$module, $tablesPrefix, $resourceIDFieldName, $resourceID, $locationFrom, $locationTo, $copyOnly = false)
 	{
 		if (!is_a($module, "CMS_module")) {
 			CMS_grandFather::raiseError("Module is not a CMS_module");
@@ -414,7 +414,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		$return = true;
 		foreach ($data as $moduleDatas) {
 			if (!isset($moduleDatas['codename'])) {

@@ -44,7 +44,7 @@ class CMS_subobject_integer extends CMS_subobject_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $objectIDs = array(), $dbValues = array(), $public = false)
+	public function __construct($id = 0, $objectIDs = array(), $dbValues = array(), $public = false)
 	{
 		parent::__construct($id, $objectIDs, $dbValues, $public);
 		
@@ -63,7 +63,7 @@ class CMS_subobject_integer extends CMS_subobject_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($value)
+	public function setValue($value)
 	{
 		if (!is_null($value) && !is_numeric($value)) {
 			$this->setError("Setting a non-integer for integer value : ".$value);
@@ -79,7 +79,7 @@ class CMS_subobject_integer extends CMS_subobject_common
 	  * @return string the string value
 	  * @access public
 	  */
-	function getValue()
+	public function getValue()
 	{
 		return (int) $this->_value;
 	}

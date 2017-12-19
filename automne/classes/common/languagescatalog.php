@@ -35,7 +35,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return array(CMS_language) The available languages sorted by label
 	  * @access public
 	  */
-	static function getAllLanguages($module = false, $orderBy="label_lng") {
+	public static function getAllLanguages($module = false, $orderBy="label_lng") {
 		static $languagesCatalog;
 		if (isset($languagesCatalog[($module) ? $module : 'all'])) {
 			return $languagesCatalog[($module) ? $module : 'all'];
@@ -76,7 +76,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return CMS_language The found language, false if not found
 	  * @access public
 	  */
-	static function getByCode($code) {
+	public static function getByCode($code) {
 		static $languages;
 		if (!isset($languages[$code])) {
 			$languages[$code] = new CMS_language($code);
@@ -95,7 +95,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return CMS_language The default language
 	  * @access public
 	  */
-	static function getDefaultLanguage($guessFromNavigator = false)
+	public static function getDefaultLanguage($guessFromNavigator = false)
 	{
 		if ($guessFromNavigator) {
 			//load language object from get value if any
@@ -129,7 +129,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return array(id => msg)
 	  * @access public
 	  */
-	static function searchMessages($module, $search = '', $languagesOnly = array(), $options = array(), $direction = 'asc', $start = 0, $limit = 0, &$resultsnb) {
+	public static function searchMessages($module, $search = '', $languagesOnly = array(), $options = array(), $direction = 'asc', $start = 0, $limit = 0, &$resultsnb) {
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';

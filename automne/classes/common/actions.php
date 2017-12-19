@@ -45,14 +45,14 @@ class CMS_actions extends CMS_grandFather
 	  * @return CMS_action The added action.
 	  * @access public
 	  */
-	function &addAction($group, $label, $formAction)
+	public function &addAction($group, $label, $formAction)
 	{
 		$added_action = new CMS_action($label, $formAction);
 		$this->_actions[$group][] =& $added_action;
 		return $added_action;
 	}
 	
-	function getContent()
+	public function getContent()
 	{
 		if (is_array($this->_actions) && $this->_actions) {
 			$content = '<table border="0" cellpadding="0" cellspacing="0"><tr>';

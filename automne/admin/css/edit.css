@@ -58,6 +58,7 @@
 	width:				16px;
 	height:				16px;
 	margin:				2px;
+	z-index:			999;
 }
 .atm-row-control-del{
 	background-position: 0px 0px;

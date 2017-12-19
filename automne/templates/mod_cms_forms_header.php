@@ -304,7 +304,14 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										}
 									}
 								}
-								if (isset($cms_forms_malformed[$form->getID()]) || isset($cms_forms_required[$form->getID()])) {
+								if($form->getAttribute('protected')){
+									if(!$form->captchaIsValid()){
+										$captchaError = true;
+									}else{
+										$captchaError = false;
+									}
+								}
+								if (isset($cms_forms_malformed[$form->getID()]) || isset($cms_forms_required[$form->getID()]) || ($form->getAttribute('protected') && $captchaError === true)) {
 									//in case of NOK for this form, do action
 									if ($action->getString("value") == "page") { //go to given page
 										//for compatibility with old versions of module

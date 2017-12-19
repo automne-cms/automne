@@ -33,7 +33,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return CMS_row
 	 * @access public
 	 */
-	static function getByID($id, $tagID = false) {
+	public static function getByID($id, $tagID = false) {
 		$row = new CMS_row($id, $tagID);
 		if (!$row->hasError()) {
 			return $row;
@@ -53,7 +53,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @param integer $count : number of rows found (passed by reference)
 	 * @access public
 	 */
-	static function getAll($includeInactive = false, $keyword = '', $groups = array(), $rowIds = array(), $user = false, $tplId = false, $csId = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
+	public static function getAll($includeInactive = false, $keyword = '', $groups = array(), $rowIds = array(), $user = false, $tplId = false, $csId = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$select = 'id_row';
 		$where = '';
 		//keywords
@@ -181,7 +181,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return array(string)
 	 * @access public
 	 */
-	static function getAllGroups($returnStack = false, $reset = false) {
+	public static function getAllGroups($returnStack = false, $reset = false) {
 		static $rowGroups;
 		if (!isset($rowGroups) || $reset) {
 			$rowGroups = array();
@@ -228,7 +228,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @param boolean $setPrivate Should the template be set as a private one ?  ALSO determines if the new row should point to the same file
 	 * @return a valid new CMS_row
 	 */
-	static function getCloneFromID($rowID = 0, $label = false, $setPrivate = false) {
+	public static function getCloneFromID($rowID = 0, $label = false, $setPrivate = false) {
 		$ret = false;
 		$model = new CMS_row($rowID);
 		if ($model->getID() > 0) {
@@ -294,7 +294,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return array : pages IDs or pages objects
 	 * @access public
 	 */
-	static function getPagesByRow($rowID, $returnObjects = false, $public = false) {
+	public static function getPagesByRow($rowID, $returnObjects = false, $public = false) {
 		$return = array();
 		if (!SensitiveIO::isPositiveInteger($rowID)) {
 			CMS_grandFather::raiseError('rowID must be a positive integer');
@@ -336,7 +336,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return array : rows IDs or rows objects
 	 * @access public
 	 */
-	static function getRowsByPage($pageId, $returnObjects = false) {
+	public static function getRowsByPage($pageId, $returnObjects = false) {
 		$rows = array();
 		if (!SensitiveIO::isPositiveInteger($pageId)) {
 			CMS_grandFather::raiseError('pageId must be a positive integer');
@@ -384,7 +384,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return array : rows images path (from webroot)
 	 * @access public
 	 */
-	static function getAllIcons() {
+	public static function getAllIcons() {
 		//read img dir
 		$availableExtensions = array('gif', 'png', 'jpg');
 		try {
@@ -409,7 +409,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return array : rows
 	 * @access public
 	 */
-	static function getByModules($modules= array(), $returnObjects = true, $exclusive = true) {
+	public static function getByModules($modules= array(), $returnObjects = true, $exclusive = true) {
 		if (!is_array($modules) && is_string($modules) && $modules) {
 			$modules = array($modules);
 		}
@@ -474,7 +474,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return boolean : true on success, false on failure
 	 * @access public
 	 */
-	static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!isset($params['module'])) {
 			$infos .= 'Error : missing module codename for rows importation ...' . "\n";
 			return false;
@@ -524,7 +524,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return mixed : integer id if exists, false otherwise
 	 * @access public
 	 */
-	static function rowExists($module, $uuid) {
+	public static function rowExists($module, $uuid) {
 		if (!$module) {
 			CMS_grandFather::raiseError("module must be set");
 			return false;
@@ -559,7 +559,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @return boolean
 	 * @access public
 	 */
-	static function uuidExists($uuid) {
+	public static function uuidExists($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;

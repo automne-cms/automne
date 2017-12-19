@@ -103,7 +103,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		$return['xtype'] =	'numberfield';
@@ -129,7 +129,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		if ($values[$prefixName.$this->_field->getID().'_0']) {
 			//check string length parameter
@@ -161,7 +161,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		$structure['unit'] = '';
 		return $structure;
@@ -176,7 +176,7 @@ class CMS_object_float extends CMS_object_string {
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -221,7 +221,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$params = $this->getParamsValues();
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['operator']['&lt;, &gt;,&lt;=, &gt;=, like '] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -240,7 +240,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'unit':
 				//get field parameters
@@ -264,7 +264,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
 			'like',
 			'>=',
@@ -310,7 +310,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+	public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		//operators are not supported for now : TODO
 		$supportedOperator = array();
@@ -347,7 +347,7 @@ class CMS_object_float extends CMS_object_string {
      * @return string : options tag list
      * @access public
      */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		$return = "";
 		$fieldID = $this->_field->getID();
 		$allValues = array();

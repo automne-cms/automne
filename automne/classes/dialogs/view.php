@@ -133,7 +133,7 @@ class CMS_view extends CMS_grandFather
 		return $return;
 	}
 
-	function addJSFile($js) {
+	public function addJSFile($js) {
 		if (!in_array($js, $this->_js)) {
 			$this->_js[] = $js;
 		}
@@ -146,7 +146,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addJavascript($js) {
+	public function addJavascript($js) {
 		$this->_jscontent .= $js;
 	}
 
@@ -157,11 +157,11 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setJavascript($js) {
+	public function setJavascript($js) {
 		$this->_jscontent = $js;
 	}
 
-	static function getJSManagerURL() {
+	public static function getJSManagerURL() {
 		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
 		return PATH_JS_WR.'/jsmanager'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?version='.$version;
 	}
@@ -186,13 +186,13 @@ class CMS_view extends CMS_grandFather
         return '';
 	}
 
-	function addCSSFile($css) {
+	public function addCSSFile($css) {
 		if (!in_array($css, $this->_css)) {
 			$this->_css[] = $css;
 		}
 	}
 
-	static function getCSSManagerURL() {
+	public static function getCSSManagerURL() {
 		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
 		return PATH_CSS_WR.'/cssmanager'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?version='.$version;
 	}
@@ -205,7 +205,7 @@ class CMS_view extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function quit() {
+	public static function quit() {
 		//check for error to be released
 		$view = CMS_view::getInstance();
 		if (!$view->isSent() && $view->getDisplayMode() != self::SHOW_HTML) {
@@ -226,7 +226,7 @@ class CMS_view extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isSent() {
+	public function isSent() {
 		return $this->_sent;
 	}
 
@@ -237,7 +237,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setContent($content) {
+	public function setContent($content) {
 		$this->_content = $content;
 	}
 
@@ -248,7 +248,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addContent($content) {
+	public function addContent($content) {
 		if (is_array($this->_content) && is_array($content)) {
 			$this->_content = array_merge_recursive($this->_content, $content);
 		} elseif (is_array($content)) {
@@ -264,7 +264,7 @@ class CMS_view extends CMS_grandFather
 	  * @return string : the current view content
 	  * @access public
 	  */
-	function getContent() {
+	public function getContent() {
 		return $this->_content;
 	}
 
@@ -275,7 +275,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setDisplayMode($mode = '') {
+	public function setDisplayMode($mode = '') {
 		$this->_displayMode = ($mode) ? $mode : $this->_displayMode;
 	}
 
@@ -285,7 +285,7 @@ class CMS_view extends CMS_grandFather
 	  * @return constant : display mode
 	  * @access public
 	  */
-	function getDisplayMode() {
+	public function getDisplayMode() {
 		return $this->_displayMode;
 	}
 
@@ -296,7 +296,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setTitle($title) {
+	public function setTitle($title) {
 		$this->_title = $title;
 	}
 
@@ -307,7 +307,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setActionMessage($message) {
+	public function setActionMessage($message) {
 		$this->_actionmessage = $message;
 	}
 
@@ -318,7 +318,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setDisconnected($status) {
+	public function setDisconnected($status) {
 		$this->_disconnected = ($status) ? true : false;
 	}
 
@@ -329,7 +329,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addError($error) {
+	public function addError($error) {
 		$this->_errors[] = $error;
 	}
 
@@ -340,7 +340,7 @@ class CMS_view extends CMS_grandFather
 	  * @return string errors
 	  * @access public
 	  */
-	function getErrors($clean = false) {
+	public function getErrors($clean = false) {
 		$errors = '';
 		switch ($this->_displayMode) {
 			case self::SHOW_JSON :
@@ -368,7 +368,7 @@ class CMS_view extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasErrors() {
+	public function hasErrors() {
 		return ($this->_errors);
 	}
 
@@ -379,7 +379,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addRawData($rawData) {
+	public function addRawData($rawData) {
 		$this->_rawdatas[] = $rawData;
 	}
 
@@ -390,7 +390,7 @@ class CMS_view extends CMS_grandFather
 	  * @return string raw datas
 	  * @access public
 	  */
-	function getRawDatas($clean = false) {
+	public function getRawDatas($clean = false) {
 		$datas = '';
 		switch ($this->_displayMode) {
 			case self::SHOW_JSON :
@@ -417,7 +417,7 @@ class CMS_view extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasRawDatas() {
+	public function hasRawDatas() {
 		return ($this->_rawdatas);
 	}
 
@@ -429,7 +429,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function show($mode = '')
+	public function show($mode = '')
 	{
 		$this->setDisplayMode($mode);
 		header('X-Automne-Response: OK');
@@ -471,7 +471,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function get($mode = '') {
+	public function get($mode = '') {
 		$this->setDisplayMode($mode);
 		$return = '';
 		switch ($this->_displayMode) {
@@ -513,7 +513,7 @@ class CMS_view extends CMS_grandFather
 	  * @return string : the copyright to add
 	  * @access public
 	  */
-	function setSecure($secure = true) {
+	public function setSecure($secure = true) {
 		$this->_secure = $secure ? true : false;
 		if ($this->_secure) {
 			if (isset($_SERVER['HTTP_X_POWERED_BY']) && $_SERVER['HTTP_X_POWERED_BY'] == 'Automne' && isset($_SERVER['HTTP_X_ATM_TOKEN'])) {
@@ -639,7 +639,7 @@ class CMS_view extends CMS_grandFather
 	  * @return boolean
 	  * @access private
 	  */
-	function setContentTag($tag) {
+	protected function setContentTag($tag) {
 		if (!$tag) {
 			return false;
 		}
@@ -737,7 +737,7 @@ class CMS_view extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function redirect($url, $exit = true, $type = 302) {
+	public static function redirect($url, $exit = true, $type = 302) {
 		$url = trim($url);
 		if (!$url || !@parse_url($url)) {
 			CMS_grandFather::raiseError('Try to make a redirection to an empty or invalid url: '.$url);

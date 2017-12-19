@@ -129,7 +129,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -143,7 +143,11 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
+		if(!defined(GOOGLE_MAP_API_KEY)){
+			CMS_grandFather::raiseError("GOOGLE_MAP_API_KEY is not defined ! (it can be defined in standard_rc.xml in modules folder)");
+		}
+
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		
@@ -285,7 +289,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 				if (typeof google == \'undefined\' || typeof google.maps == \'undefined\' || typeof google.maps.Map == \'undefined\') {
 					var script = document.createElement("script");
 				    script.type = "text/javascript";
-				    script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=isNaN";
+				    script.src = "http://maps.google.com/maps/api/js?callback=isNaN&key='.GOOGLE_MAP_API_KEY.'";
 				    document.body.appendChild(script);
 				}
 			}', false, false)),
@@ -299,25 +303,13 @@ class CMS_object_google_coordinates extends CMS_object_common
 		return $return;
 	}
 
-	/**
-	  * get object HTML description for admin search detail, composed of latitude and longitude
-	  *
-	  * @return string : object HTML description
-	  * @access public
-	  */
-	function getHTMLDescription() {
-		$latitude = $this->getValue("latitude");
-		$longitude = $this->getValue("longitude");
-		return $latitude . '<br />' . $longitude;
-	}
-
     /**
       * get object values structure available with getValue method
       *
       * @return multidimentionnal array : the object values structure
       * @access public
       */
-    function getStructure() {
+    public function getStructure() {
 		$structure = parent::getStructure();
 		unset($structure['value']);
 		$structure['longitude'] = '';
@@ -333,7 +325,7 @@ class CMS_object_google_coordinates extends CMS_object_common
       * @return multidimentionnal array : the object values structure
       * @access public
       */
-    function getValue($name, $parameters = '') {
+    public function getValue($name, $parameters = '') {
 		switch($name) {
 		    case "longitude" :
 		        return $this->_subfieldValues[0]->getValue();
@@ -356,7 +348,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return string : the form field HTML tag
 	  * @access public
 	  */
-   function getInput($fieldID, $language, $inputParams) {
+    public function getInput($fieldID, $language, $inputParams) {
 		$params = $this->getParamsValues();
 		$polymodDebug = '';
 		
@@ -409,8 +401,8 @@ class CMS_object_google_coordinates extends CMS_object_common
       * @return array : the labels of object structure and functions
       * @access public
       */
-    function getLabelsStructure(&$language, $objectName = '') {
-		$labels = parent::getLabelsStructure($language, $objectName);
+    public function getLabelsStructure(&$language) {
+		$labels = parent::getLabelsStructure($language);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
 		$labels['structure']['longitude'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION,false ,$this->_messagesModule);
@@ -426,7 +418,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	 * @return array of coordonate
 	 * @access protected
 	 */
-	public static function getCoordinates (&$language,  $address = '' , $sCcTld = false ){
+	public static function getCoordinates(&$language,  $address = '' , $sCcTld = false ){
 		$lat = $long = '';
 		//for the moment the adress is mandatory but we'll set it optionnal in the future
 		if(!$address){
@@ -488,7 +480,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return array : the treated parameters
 	  * @access public
 	  */
-	function importParams($params, $cms_language, &$idsRelation, &$infos) {
+	public function importParams($params, $cms_language, &$idsRelation, &$infos) {
 		if (isset($params['fieldsForAddress']) && $params['fieldsForAddress']) {
 			$fieldsIds = explode(';', $params['fieldsForAddress']);
 			$convertedFieldsIds = array();

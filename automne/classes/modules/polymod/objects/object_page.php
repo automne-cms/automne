@@ -111,7 +111,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return void
 	  * @access public
 	  */
-	function CMS_object_page($datas=array(), &$field, $public=false)
+	public function CMS_object_page($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -125,7 +125,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		$return['xtype'] =	'atmPageField';
@@ -146,7 +146,7 @@ class CMS_object_page extends CMS_object_integer
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -200,7 +200,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		if (empty($values[$prefixName.$this->_field->getID().'_0'])) {
 			$values[$prefixName.$this->_field->getID().'_0'] = 0;
 		}
@@ -222,7 +222,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		$structure['pageTitle'] = '';
 		$structure['pageURL'] = '';
@@ -255,7 +255,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'pageTitle':
 				return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'title');
@@ -283,7 +283,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$params = $this->getParamsValues();
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['pageTitle'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_TITLE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -315,7 +315,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		global $cms_language;
 		if (is_object($this->_subfieldValues[0]) && $this->_subfieldValues[0]->getValue()) {
 			return '<a href="#" href="#" onclick="Automne.utils.getPageById('.$this->_subfieldValues[0]->getValue().');Ext.WindowMgr.getActive().close();">'.CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'title').' ('.$this->_subfieldValues[0]->getValue().')</a>';

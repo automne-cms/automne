@@ -137,7 +137,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -148,7 +148,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return string : the label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		global $cms_language;
 		if (!is_object($this->_subfieldValues[0])) {
 			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
@@ -178,7 +178,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values, $prefixName, $newFormat = false) {
+	public function checkMandatory($values, $prefixName, $newFormat = false) {
 		global $cms_language;
 		$date = new CMS_date();
 		$date->setFormat($cms_language->getDateFormat());
@@ -210,7 +210,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		
@@ -310,7 +310,7 @@ class CMS_object_date extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -375,7 +375,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		global $cms_language;
 		$params = $this->getParamsValues();
 		$date = new CMS_date();
@@ -421,7 +421,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		$structure['formatedValue'] = '';
 		$structure['notNull'] = '';
@@ -437,7 +437,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
         // @TODOV4 : Manage language into database !
         $languages = array();
         $languages['fr'] = array(
@@ -521,7 +521,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['formatedValue|format'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['notNull'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -541,7 +541,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
 			'>=',
 			'<=',
@@ -612,7 +612,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+	public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
@@ -640,7 +640,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		$params = $this->getParamsValues();
 		$date = new CMS_date();
 		if ($this->_subfieldValues[0]->getValue()) {
@@ -667,7 +667,7 @@ class CMS_object_date extends CMS_object_common
      * @return string : options tag list
      * @access public
      */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		global $cms_language;
         $return = "";
 		$fieldID = $this->_field->getID();

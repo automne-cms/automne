@@ -132,6 +132,8 @@ odg
 odp
 ods
 odt
+ogg
+ogv
 old
 org
 ori
@@ -222,6 +224,7 @@ v3
 vcf
 vendor
 wav
+webm
 wma
 wmv
 wmz

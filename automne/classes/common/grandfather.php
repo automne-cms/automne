@@ -101,19 +101,44 @@ class CMS_grandFather
 				$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 			}
 
+			$errorLogFile = PATH_MAIN_FS.'/'.self::ERROR_LOG;
+			if(is_file($errorLogFile)){
+				//Check if file must be rotate
+				$lastModificationDate = date ("Y-m-d", filemtime($errorLogFile));
+				$today = date("Y-m-d");
+				if($lastModificationDate != $today){
+					static::rotateLog();
+				}
+			}
+
 			//second condition are for static calls (made by static methods)
 			/*if (!isset($this) || !isset($this->_log) || $this->_log) {*/
-				if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
-					CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
-				} else {
-					die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
-				}
+			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
+				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
+			} else {
+				die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
+			}
 			/*}*/
 		}
 		/*//must be at the end because it interferes with the static calls conditions above
 		if ($error && isset($this)) {
 			$this->_errRaised = true;
 		}*/
+	}
+
+	public static function rotateLog(){
+
+		$errorLogFile = PATH_MAIN_FS.'/'.self::ERROR_LOG;
+		$lastModificationDate = date ("Y-m-d", filemtime($errorLogFile));
+
+		try{
+			$source = PATH_MAIN_FS.'/'.self::ERROR_LOG;
+			$dest = PATH_LOGS_FS.'/'.self::ERROR_LOG.'-'.$lastModificationDate.'.gz';
+			if (is_file($source) && !is_file($dest) && CMS_file::gzipfile($source, $dest, 3)) {
+				//erase error log file
+				@unlink($source);
+			}
+		} catch(Exception $e) {}
 	}
 
 	/**
@@ -126,51 +151,51 @@ class CMS_grandFather
 	  * Use for non-static calls of _raiseError
 	  */
 	public function _setError($errorMessage, $encodeOutput = false, $error = true) {
-	$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
-	if($this->_debug === NULL) {
-		$this->_debug = $systemDebug;
-	}
-	if ($errorMessage) {
-		//second condition are for static calls (made by static methods)
-		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && (isset($this->_debug) && $this->_debug))) {
-			$backTrace = $backTraceLink = '';
-			if (version_compare(phpversion(), "5.2.5", "<")) {
-				$bt = @array_reverse(debug_backtrace());
-			} else {
-				$bt = @array_reverse(debug_backtrace(false));
-			}
-			$backtrace = array(
-				'summary'		=> sensitiveIO::printBackTrace($bt),
-				'backtrace'		=> @print_r($bt,true),
-			);
-			$backtraceName = 'bt_'.md5(rand());
-			$backTraceLink = PATH_ADMIN_WR.'/backtrace.php?bt='.$backtraceName;
-			//save backtrace to cache (for 10 min)
-			$cache = new CMS_cache($backtraceName, 'atm-backtrace', 600, false);
-			if ($cache) {
-				$cache->save($backtrace);
-			}
-			unset($backtrace, $cache, $bt);
-			//append error to current view
-			$view = CMS_view::getInstance();
-			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
-			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
+		$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
+		if($this->_debug === NULL) {
+			$this->_debug = $systemDebug;
 		}
+		if ($errorMessage) {
+			//second condition are for static calls (made by static methods)
+			if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && (isset($this->_debug) && $this->_debug))) {
+				$backTrace = $backTraceLink = '';
+				if (version_compare(phpversion(), "5.2.5", "<")) {
+					$bt = @array_reverse(debug_backtrace());
+				} else {
+					$bt = @array_reverse(debug_backtrace(false));
+				}
+				$backtrace = array(
+					'summary'		=> sensitiveIO::printBackTrace($bt),
+					'backtrace'		=> @print_r($bt,true),
+				);
+				$backtraceName = 'bt_'.md5(rand());
+				$backTraceLink = PATH_ADMIN_WR.'/backtrace.php?bt='.$backtraceName;
+				//save backtrace to cache (for 10 min)
+				$cache = new CMS_cache($backtraceName, 'atm-backtrace', 600, false);
+				if ($cache) {
+					$cache->save($backtrace);
+				}
+				unset($backtrace, $cache, $bt);
+				//append error to current view
+				$view = CMS_view::getInstance();
+				$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
+				$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
+			}
 
-		//second condition are for static calls (made by static methods)
-		if ($this->_log) {
-			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
-				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
-			} else {
-				die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
+			//second condition are for static calls (made by static methods)
+			if ($this->_log) {
+				if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
+					CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
+				} else {
+					die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
+				}
 			}
 		}
+		//must be at the end because it interferes with the static calls conditions above
+		if ($error) {
+			$this->_errRaised = true;
+		}
 	}
-	//must be at the end because it interferes with the static calls conditions above
-	if ($error) {
-		$this->_errRaised = true;
-	}
-}
 
 	/**
 	  * Raises an error.
@@ -254,7 +279,7 @@ class CMS_grandFather
 	  * @return true
 	  * @access public
 	  */
-	static function PHPErrorHandler($errno, $errstr , $errfile , $errline , $errcontext ) {
+	public static function PHPErrorHandler($errno, $errstr , $errfile , $errline , $errcontext ) {
 		//if errno is not in the error_reporting scope, skip it
 		//read it like this : "if errno bit is not in error_reporting"
 		if ($errno & ~error_reporting()) {
@@ -285,7 +310,7 @@ class CMS_grandFather
 	  * @return false
 	  * @access public
 	  */
-	function __call($name, $parameters)
+	public function __call($name, $parameters)
 	{
 		$bt = debug_backtrace();
 		if (isset($bt[1]) && isset($bt[1]['class'])) {
@@ -302,7 +327,7 @@ class CMS_grandFather
 	  * @return true
 	  * @access public
 	  */
-	static function autoload($classname) {
+	public static function autoload($classname) {
 		static $classes, $modules;
 		if (!isset($classes)) {
 			$classes = array(

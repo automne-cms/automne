@@ -88,16 +88,16 @@ class CMS_example extends CMS_superResource
 	  */
 	  
 	protected $_tableData = array(
-							'name' 			=> array("string"				,""),
-							'resource' 		=> array("resource"				,""),
-							'category'		=> array("CMS_reserv_category"	,""),
-							'date'			=> array("date"					,"setNow"),
-							'description' 	=> array("html"					,""),
-							'href'			=> array("CMS_href"				,""),
-							'image' 		=> array("image"				,""),
-							'reservable' 	=> array("boolean"				,true),
-							'language'		=> array("string"				,"")
-							);
+		'name' 			=> array("string"				,""),
+		'resource' 		=> array("resource"				,""),
+		'category'		=> array("CMS_reserv_category"	,""),
+		'date'			=> array("date"					,"setNow"),
+		'description' 	=> array("html"					,""),
+		'href'			=> array("CMS_href"				,""),
+		'image' 		=> array("image"				,""),
+		'reservable' 	=> array("boolean"				,true),
+		'language'		=> array("string"				,"")
+	);
 	
 	/**
 	  * Constructor.
@@ -108,7 +108,7 @@ class CMS_example extends CMS_superResource
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0,$public=false)
+	public function __construct($id = 0,$public=false)
 	{
 		//set class name
 		$this->_className = get_class($this);
@@ -122,7 +122,7 @@ class CMS_example extends CMS_superResource
 	  * @return string: the validation label.
 	  * @access public
 	  */
-	function getValidationLabel() {
+	public function getValidationLabel() {
 		return $this->getString("name");
 	}
 }

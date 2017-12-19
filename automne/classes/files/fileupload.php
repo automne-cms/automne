@@ -95,7 +95,7 @@ class CMS_fileUpload extends CMS_grandFather
 	 * responding to $destinationPath before uploading new one
 	 * @return void
 	 */
-	function __construct($fieldname = false, $overwrite = false) {
+	public function __construct($fieldname = false, $overwrite = false) {
 		if ($fieldname != '') {
 			$this->_fieldname = (string) $fieldname;
 		}
@@ -113,7 +113,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @param string $name
 	  * @return string
 	  */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
@@ -125,7 +125,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @param string $name name of attribute to set
 	  * @param $value , the value to give
 	  */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		$name = '_'.$name;
 		$this->$name = $value;
 		return true;
@@ -204,7 +204,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @param string $key, which path ?
 	  * @return string
 	  */
-	function getPath($key = false) {
+	public function getPath($key = false) {
 		if ($this->_isValidPathKey($key)) {
 			return $this->_pathes[$key];
 		} else {
@@ -220,7 +220,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @param string $value, value to set
 	  * @return boolean true on success, false otherwise
 	  */
-	function setPath($key, $value) {
+	public function setPath($key, $value) {
 		if ($this->_isValidPathKey($key)) {
 			$this->_pathes[$key] = $value;
 			return true;
@@ -235,7 +235,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return boolean true if will overwrite, false otherwise
 	  * @access public
 	  */
-	function overwrite() {
+	public function overwrite() {
 		return $this->_overwrite;
 	}
 	
@@ -245,7 +245,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return boolean true if ready to move upload 
 	  * @access public
 	  */
-	function ready() {
+	public function ready() {
 		return ( $this->_fieldname != '' && $this->getInputValue("name") != '' );
 	}
 	
@@ -256,7 +256,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return string, the filename
 	  * @access public
 	  */
-	function getFilename($key = 'destination') {
+	public function getFilename($key = 'destination') {
 		if ($this->_isValidPathKey($key)) {
 			return @basename($this->_pathes[$key]);
 		} else {
@@ -270,7 +270,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return boolean true if too wide, false otherwise
 	  * @access public
 	  */
-	function inputFileTooWide() {
+	public function inputFileTooWide() {
 		if ($_FILES[$this->_fieldname]["error"] == 1 
 				|| $_FILES[$this->_fieldname]["size"] > (ini_get("upload_max_filesize") * 1048576) ) {
 			return true;
@@ -286,7 +286,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return mixed, the value of input file array
 	  * @access public
 	  */
-	function getInputValue($key) {
+	public function getInputValue($key) {
 		return $_FILES[$this->_fieldname][$key];
 	}
 	
@@ -297,7 +297,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return string, the directory
 	  * @access public
 	  */
-	function getPathBasedir($key = 'destination') {
+	public function getPathBasedir($key = 'destination') {
 		if ($this->_isValidPathKey($key)) {
 			return @dirname($this->_pathes[$key]);
 		} else {
@@ -313,7 +313,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return boolean true if deletion succeeded, false otherwise
 	  * @access public
 	  */
-	function deleteOrigin()
+	public function deleteOrigin()
 	{
 		return (@is_file($this->_pathes["origin"])) ? $this->_deletePathFile("origin") : true ;
 	}
@@ -324,7 +324,7 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @return boolean true if file upload successfully done, false otherwise
 	  * @access public
 	  */
-	function doUpload()
+	public function doUpload()
 	{
 		if ($this->ready()) {
 			if ($this->_checkDestinationPath()) {

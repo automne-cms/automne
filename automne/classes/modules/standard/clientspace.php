@@ -69,7 +69,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return void
 	  * @access public
 	  */
-	function __construct($templateID, $tagID, $editionMode = false, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
+	public function __construct($templateID, $tagID, $editionMode = false, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 		$this->_editionMode = $editionMode;
 		if ($this->_editionMode) {
@@ -155,7 +155,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return integer the template DB id
 	  * @access public
 	  */
-	function getTemplateID()
+	public function getTemplateID()
 	{
 		return $this->_templateID;
 	}
@@ -166,7 +166,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return integer the tag ID attribute
 	  * @access public
 	  */
-	function getTagID()
+	public function getTagID()
 	{
 		return $this->_tagID;
 	}
@@ -177,7 +177,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return array(CMS_rows) the rows
 	  * @access public
 	  */
-	function getRows()
+	public function getRows()
 	{
 		return $this->_rows;
 	}
@@ -188,7 +188,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return CMS_rows the queried row
 	  * @access public
 	  */
-	function getRow($rowID, $rowTagID)
+	public function getRow($rowID, $rowTagID)
 	{
 		foreach ($this->_rows as $row) {
 			if ($row->getID() == $rowID && $row->getTagID() == $rowTagID) {
@@ -209,7 +209,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return string the data from the rows.
 	  * @access public
 	  */
-	function getData(&$language, &$page, $visualizationMode, $templateHasPages=false)
+	public function getData(&$language, &$page, $visualizationMode, $templateHasPages=false)
 	{
 		global $cms_user;
 		// Prepare content
@@ -246,7 +246,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return string, The data returned by all rows as a string
 	  * @access public
 	  */
-	function getRawData(&$language, &$page, $visualizationMode, $templateHasPages=false)
+	public function getRawData(&$language, &$page, $visualizationMode, $templateHasPages=false)
 	{
 		$rowCanBeEdited = false ;
 		switch ($visualizationMode) {
@@ -285,7 +285,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function addRow($rowID, $rowTagID, $index) {
+	public function addRow($rowID, $rowTagID, $index) {
 		//check that another row with same tag ID doesn't exists
 		foreach ($this->_rows as $row) {
 			if ($row->getTagID() == $rowTagID) {
@@ -319,7 +319,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return boolean
 	  * @access public
 	  */
-	function delRow($rowID, $rowTagID)
+	public function delRow($rowID, $rowTagID)
 	{
 		$rows = array();
 		foreach ($this->_rows as $row) {
@@ -340,7 +340,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return boolean true if the move is successful, false otherwise
 	  * @access public
 	  */
-	function moveRow($rowID, $rowTagID, $index)
+	public function moveRow($rowID, $rowTagID, $index)
 	{
 		//find row current index and remove it from rows
 		$row = false;
@@ -379,7 +379,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 	}
 	
@@ -389,7 +389,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if ($this->_templateID && $this->_tagID) {
 			$table = "mod_standard_clientSpaces";

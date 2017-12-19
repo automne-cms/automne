@@ -118,7 +118,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $dbValues=array())
+	public function __construct($id = 0, $dbValues=array())
 	{
 		$datas = array();
 		if ($id && !$dbValues) {
@@ -168,7 +168,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_ID;
 	}
@@ -181,7 +181,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($valueName, $value)
+	public function setValue($valueName, $value)
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
 			$this->setError("Unknown valueName to set :".$valueName);
@@ -212,7 +212,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setUuid($uuid) {
+	public function setUuid($uuid) {
 		$this->_objectValues['uuid'] = $uuid;
 	}
 	
@@ -222,7 +222,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function compileDefinition() {
+	public function compileDefinition() {
 		global $cms_language;
 		$parameters = array();
 		$parameters['module'] = $this->_objectValues["module"];
@@ -240,7 +240,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return mixed, the value
 	  * @access public
 	  */
-	function getValue($valueName)
+	public function getValue($valueName)
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
 			$this->setError("Unknown valueName to get :".$valueName);
@@ -256,7 +256,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return string, the label
 	  * @access public
 	  */
-	function getLabel($language = '') {
+	public function getLabel($language = '') {
 		$label = new CMS_object_i18nm($this->getValue("labelID"));
 		if ($language instanceof CMS_language) {
 			return $label->getValue($language->getCode());
@@ -272,7 +272,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return string, the label
 	  * @access public
 	  */
-	function getObjectLabel($language) {
+	public function getObjectLabel($language) {
 		return $this->getLabel($language);
 	}
 	
@@ -283,7 +283,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return string, the description
 	  * @access public
 	  */
-	function getDescription($language) {
+	public function getDescription($language) {
 		$description = new CMS_object_i18nm($this->getValue("descriptionID"));
 		if (is_a($language, "CMS_language")) {
 			return $description->getValue($language->getCode());
@@ -298,7 +298,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return array(integer parameterID => array parameter) : the subfield parameters
 	  * @access public
 	  */
-	function getSubFieldParameters () {
+	public function getSubFieldParameters () {
 		if (!$this->_parametersLoaded) {
 			$this->setError("Parameters must be loaded first (use loadParameters method)");
 			return false;
@@ -312,7 +312,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasParameters() {
+	public function hasParameters() {
 		return $this->_parameters ? true:false;
 	}
 	
@@ -322,7 +322,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function loadParameters(&$field) {
+	public function loadParameters(&$field) {
 		//set $this->_parameterValues
 		foreach ($this->_parameters as $parameterID => $parameter) {
 			$param = $field->getParameter($parameter['internalName']);
@@ -340,7 +340,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParameters($language, $prefixName) {
+	public function getHTMLSubFieldsParameters($language, $prefixName) {
 		if (!is_a($language,'CMS_language')) {
 			$this->setError("Language must be a CMS_language object : ".print_r($language,true));
 			return false;
@@ -400,7 +400,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersSearch($language, $prefixName = '', $selectedValues = false, $disableSelected = false) {
+	public function getHTMLSubFieldsParametersSearch($language, $prefixName = '', $selectedValues = false, $disableSelected = false) {
 		global $polymodCodename;
 		
 		$values = (!$selectedValues) ? $this->_parameterValues[0] : $selectedValues;
@@ -446,7 +446,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return array, the treated datas
 	  * @access public
 	  */
-	function treatParams($post, $prefix) {
+	public function treatParams($post, $prefix) {
 		$parameters = $this->_parameters;
 		$treatedParams = array();
 		foreach($parameters as $aParameter) {
@@ -495,7 +495,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return array(string internalName => mixed parameter value)
 	  * @access public
 	  */
-	function getParamsValues() {
+	public function getParamsValues() {
 		if (!$this->_parametersLoaded) {
 			$this->setError("Parameters must be loaded first (use loadParameters method)");
 			return false;
@@ -514,7 +514,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isPrimaryResource() {
+	public function isPrimaryResource() {
 		return ($this->getValue("resourceUsage") == 1) ? true:false;
 	}
 	
@@ -527,7 +527,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isSecondaryResource($dontCheckForPrimaryResourceAttachment = false) {
+	public function isSecondaryResource($dontCheckForPrimaryResourceAttachment = false) {
 		if ($dontCheckForPrimaryResourceAttachment) {
 			return ($this->getValue("resourceUsage") == 2) ? true:false;
 		}
@@ -554,7 +554,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasCategories() {
+	public function hasCategories() {
 		return CMS_poly_object_catalog::objectHasCategories($this->getID());
 	}
 	
@@ -564,7 +564,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if (!$this->_objectValues["uuid"]) {
 			$this->_objectValues["uuid"] = io::uuid();
@@ -624,7 +624,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy() {
+	public function destroy() {
 		if ($this->_ID) {
 			//first delete old polyobject references
 			$sql = "
@@ -679,7 +679,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = array();
 		$structure['id'] = '';
 		$structure['label'] = '';
@@ -770,7 +770,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!isset($params['module'])) {
 			$infos .= 'Error : missing module codename for object importation ...'."\n";
 			return false;
@@ -943,7 +943,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function convertDefinitions($module) {
+	public function convertDefinitions($module) {
 		$this->setValue("composedLabel", $module->convertDefinitionString($this->getValue("composedLabel"), false, true));
 		$this->setValue("previewURL", $module->convertDefinitionString($this->getValue("previewURL"), false, true));
 		$this->setValue("indexURL", $module->convertDefinitionString($this->getValue("indexURL"), false, true));

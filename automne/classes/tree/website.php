@@ -134,7 +134,7 @@ class CMS_website extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0)
+	public function __construct($id = 0)
 	{
 		static $applicationWebroot;
 		if ($id) {
@@ -206,7 +206,7 @@ class CMS_website extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -218,7 +218,7 @@ class CMS_website extends CMS_grandFather
 	  * @return string the website meta value
 	  * @access public
 	  */
-	function getMeta($meta) {
+	public function getMeta($meta) {
 		if (!isset($this->_meta[$meta])) {
 			$this->setError("Unknown meta to get : ".$meta);
 			return false;
@@ -234,7 +234,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setMeta($meta, $value) {
+	public function setMeta($meta, $value) {
 		if (!isset($this->_meta[$meta])) {
 			$this->setError("Unknown meta to set : ".$meta);
 			return false;
@@ -249,7 +249,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isMain()
+	public function isMain()
 	{
 		return $this->_isMain;
 	}
@@ -260,7 +260,7 @@ class CMS_website extends CMS_grandFather
 	  * @return string The label
 	  * @access public
 	  */
-	function getLabel()
+	public function getLabel()
 	{
 		return $this->_label;
 	}
@@ -272,7 +272,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setLabel($label)
+	public function setLabel($label)
 	{
 		$this->_label = $label;
 		return true;
@@ -285,7 +285,7 @@ class CMS_website extends CMS_grandFather
 	  * @return mixed The 404 CMS_page object if any and public or false if none found
 	  * @access public
 	  */
-	function get404($returnObject = true)
+	public function get404($returnObject = true)
 	{
 		if (!io::isPositiveInteger($this->_404)) {
 			return false;
@@ -307,7 +307,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function set404($pageId)
+	public function set404($pageId)
 	{
 		if ($pageId && !io::isPositiveInteger($pageId)) {
 			return false;
@@ -323,7 +323,7 @@ class CMS_website extends CMS_grandFather
 	  * @return mixed The 403 CMS_page object if any and public or false if none found
 	  * @access public
 	  */
-	function get403($returnObject = true)
+	public function get403($returnObject = true)
 	{
 		if (!io::isPositiveInteger($this->_403)) {
 			return false;
@@ -345,7 +345,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function set403($pageId)
+	public function set403($pageId)
 	{
 		if ($pageId && !io::isPositiveInteger($pageId)) {
 			return false;
@@ -360,7 +360,7 @@ class CMS_website extends CMS_grandFather
 	  * @return string The Codename
 	  * @access public
 	  */
-	function getCodename()
+	public function getCodename()
 	{
 		return $this->_codename;
 	}
@@ -372,7 +372,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setCodename($codename)
+	public function setCodename($codename)
 	{
 		//codename should'nt be changed once set
 		if ($this->_id) {
@@ -403,7 +403,7 @@ class CMS_website extends CMS_grandFather
 	  * @return string the URL
 	  * @access public
 	  */
-	function getURL($includeHTTP = true)
+	public function getURL($includeHTTP = true)
 	{
 		//strip final slash
 		if (io::substr($this->_url, io::strlen($this->_url) - 1) == "/") {
@@ -423,7 +423,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setURL($url)
+	public function setURL($url)
 	{
 		if (io::substr($url, 0, 7) == "http://") {
 			$url = io::substr($url, 7);
@@ -446,7 +446,7 @@ class CMS_website extends CMS_grandFather
 	  * @return array the URL of alternatives domains
 	  * @access public
 	  */
-	function getAltDomains($includeHTTP = true)
+	public function getAltDomains($includeHTTP = true)
 	{
 		if (!$this->_altdomains) {
 			return array();
@@ -470,7 +470,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setAltDomains($domains)
+	public function setAltDomains($domains)
 	{
 		if (!$domains) {
 			$this->_altdomains = '';
@@ -499,7 +499,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function redirectAltDomain()
+	public function redirectAltDomain()
 	{
 		return $this->_altredir ? true : false;
 	}
@@ -511,7 +511,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setRedirectAltDomain($altredir)
+	public function setRedirectAltDomain($altredir)
 	{
 		$this->_altredir = $altredir ? true : false;
 		return true;
@@ -524,7 +524,7 @@ class CMS_website extends CMS_grandFather
 	  * @return CMS_page The Root page
 	  * @access public
 	  */
-	function getRoot()
+	public function getRoot()
 	{
 		return $this->_root;
 	}
@@ -536,7 +536,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setRoot($page)
+	public function setRoot($page)
 	{
 		if (is_a($page, "CMS_page")) {
 			$ws = CMS_tree::getPageWebsite($page);
@@ -560,7 +560,7 @@ class CMS_website extends CMS_grandFather
 	  * @return string The pages directory.
 	  * @access public
 	  */
-	function getPagesPath($relativeTo)
+	public function getPagesPath($relativeTo)
 	{
 		if ($this->_codename) {
 			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
@@ -596,7 +596,7 @@ class CMS_website extends CMS_grandFather
 	  * @return string The pages directory.
 	  * @access public
 	  */
-	function getHTMLPagesPath($relativeTo)
+	public function getHTMLPagesPath($relativeTo)
 	{
 		if (io::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
 			$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
@@ -614,7 +614,7 @@ class CMS_website extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			$sql = "
@@ -655,7 +655,7 @@ class CMS_website extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if (!sensitiveIO::isPositiveInteger($this->_order)) {
 			//get max order
@@ -729,7 +729,7 @@ class CMS_website extends CMS_grandFather
 	  * @return array(codename => pageId)
 	  * @access public
 	  */
-	function getAllPagesCodenames() {
+	public function getAllPagesCodenames() {
 		$pageIds = CMS_tree::getAllSiblings($this->_root->getID(), false, true);
 		if (!is_array($pageIds)) {
 			$pageIds = array();

@@ -79,7 +79,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($moduleCodename, $editions, $resourceID)
+	public function __construct($moduleCodename, $editions, $resourceID)
 	{
 		$this->_validationOptions = VALIDATION_OPTION_ACCEPT + VALIDATION_OPTION_REFUSE + VALIDATION_OPTION_TRANSFER;
 		$this->_moduleCodename = $moduleCodename;
@@ -93,7 +93,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return integer the sum of REOURCE_EDITION constants
 	  * @access public
 	  */
-	function getEditions()
+	public function getEditions()
 	{
 		return $this->_editions;
 	}
@@ -104,7 +104,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return integer the internal id of the resource (module-wide range)
 	  * @access public
 	  */
-	function getResourceID()
+	public function getResourceID()
 	{
 		return $this->_resourceID;
 	}
@@ -115,7 +115,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return string the module codename
 	  * @access public
 	  */
-	function getModuleCodename()
+	public function getModuleCodename()
 	{
 		return $this->_moduleCodename;
 	}
@@ -126,7 +126,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return integer the internal type of validation label (module-wide range)
 	  * @access public
 	  */
-	function getValidationTypeLabel()
+	public function getValidationTypeLabel()
 	{
 		return $this->_validationTypeLabel;
 	}
@@ -138,7 +138,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return boolean true on success to set it, false otherwise.
 	  * @access public
 	  */
-	function setValidationTypeLabel($label)
+	public function setValidationTypeLabel($label)
 	{
 		$this->_validationTypeLabel = SensitiveIO::sanitizeHTMLString($label);
 		return true;
@@ -150,7 +150,7 @@ class CMS_resourceValidationInfo extends CMS_grandFather
 	  * @return aray(integer=>integer) The validation options constants indexed by message ID
 	  * @access public
 	  */
-	function getAllValidationOptions()
+	public function getAllValidationOptions()
 	{
 		return array(	CMS_resourceValidation::MESSAGE_VALIDATION_ACCEPT	=> VALIDATION_OPTION_ACCEPT,
 						CMS_resourceValidation::MESSAGE_VALIDATION_REFUSE	=> VALIDATION_OPTION_REFUSE,

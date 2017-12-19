@@ -28,7 +28,7 @@ class CMS_array2Xml extends CMS_grandFather {
 	
 	protected $_keyname;
 	
-	function __construct($array, $tag, $keyname='key') {
+	public function __construct($array, $tag, $keyname='key') {
 		$this->_keyname = $keyname;
 		$this->_doc = new CMS_DOMDocument();
 		$this->_doc->loadXML("<$tag>".$this->_2xml($array)."</$tag>", 0, true, false);
@@ -36,11 +36,11 @@ class CMS_array2Xml extends CMS_grandFather {
 		return;
 	}
 	
-	function getXML() {
+	public function getXML() {
 		return $this->_doc;
 	}
 	
-	function getXMLString() {
+	public function getXMLString() {
 		return $this->_doc->saveXML();
 	}
 	

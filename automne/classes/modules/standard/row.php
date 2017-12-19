@@ -144,7 +144,7 @@ class CMS_row extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $tagID = false)
+	public function __construct($id = 0, $tagID = false)
 	{
 		$this->_tagID = $tagID;
 		$this->_modules = new CMS_stack();
@@ -188,7 +188,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true if it's the case
 	  * @access public
 	  */
-	function hasClientSpaces()
+	public function hasClientSpaces()
 	{
 		$sql = "
 			select
@@ -220,7 +220,7 @@ class CMS_row extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -231,7 +231,7 @@ class CMS_row extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getTagID()
+	public function getTagID()
 	{
 		return $this->_tagID;
 	}
@@ -242,7 +242,7 @@ class CMS_row extends CMS_grandFather
 	  * @return string the label
 	  * @access public
 	  */
-	function getLabel()
+	public function getLabel()
 	{
 		return $this->_label;
 	}
@@ -255,7 +255,7 @@ class CMS_row extends CMS_grandFather
 	  * @return string the row image filename
 	  * @access public
 	  */
-	function getImage($from = CMS_file::WEBROOT, $fileOnly = false) {
+	public function getImage($from = CMS_file::WEBROOT, $fileOnly = false) {
 		if (!file_exists(PATH_TEMPLATES_ROWS_FS.'/images/'.$this->_image)) {
 			$this->_image = 'nopicto.gif';
 		}
@@ -272,7 +272,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setImage($image = 'nopicto.gif')
+	public function setImage($image = 'nopicto.gif')
 	{
 		if (!trim($image)) {
 			$image = 'nopicto.gif';
@@ -294,7 +294,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setLabel($label)
+	public function setLabel($label)
 	{
 		if ($label) {
 			$this->_label = stripslashes($label);
@@ -310,7 +310,7 @@ class CMS_row extends CMS_grandFather
 	  * @return string The label
 	  * @access public
 	  */
-	function getDescription()
+	public function getDescription()
 	{
 		return $this->_description;
 	}
@@ -322,7 +322,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setDescription($description)
+	public function setDescription($description)
 	{
 		$this->_description = $description;
 		return true;
@@ -334,7 +334,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isUseable()
+	public function isUseable()
 	{
 		return $this->_useable;
 	}
@@ -346,7 +346,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setUsability($usability)
+	public function setUsability($usability)
 	{
 		$this->_useable = ($usability) ? true : false;
 		return true;
@@ -358,7 +358,7 @@ class CMS_row extends CMS_grandFather
 	  * @return array(string) The filtered templates IDs
 	  * @access public
 	  */
-	function getFilteredTemplates()
+	public function getFilteredTemplates()
 	{
 		return $this->_tplfilter;
 	}
@@ -370,7 +370,7 @@ class CMS_row extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setFilteredTemplates($tplsFilter)
+	public function setFilteredTemplates($tplsFilter)
 	{
 		if (!is_array($tplsFilter)) {
 			$this->_setError('$tplsFilter must be an array of page Ids.');
@@ -385,7 +385,7 @@ class CMS_row extends CMS_grandFather
 	  * @return string the file name of the definition file, without any path indication.
 	  * @access public
 	  */
-	function getDefinitionFileName()
+	public function getDefinitionFileName()
 	{
 		return $this->_definitionFile;
 	}
@@ -396,7 +396,7 @@ class CMS_row extends CMS_grandFather
 	  * @return string the definition
 	  * @access public
 	  */
-	function getDefinition() {
+	public function getDefinition() {
 		if ($filename = $this->getDefinitionFileName()) {
 			$file = new CMS_file(PATH_TEMPLATES_ROWS_FS."/".$filename);
 			$data = $file->getContent();
@@ -419,7 +419,7 @@ class CMS_row extends CMS_grandFather
 	  * @return CMS_XMLTag the block tag
 	  * @access public
 	  */
-	function getBlockTagById($blockID)
+	public function getBlockTagById($blockID)
 	{
 		if (!$this->_blocks) {
 			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_BLOCK_TAGS,RESOURCE_LOCATION_EDITION,$this);
@@ -444,7 +444,7 @@ class CMS_row extends CMS_grandFather
 	  * @return array(CMS_module) The modules present in the template via module client spaces
 	  * @access public
 	  */
-	function getModules($outputObjects = true)
+	public function getModules($outputObjects = true)
 	{
 		$elements = $this->_modules->getElements();
 
@@ -463,7 +463,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_VIEW) {
+	public function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_VIEW) {
 		if (!is_a($cms_user, 'CMS_profile_user')) {
 			$this->setError("cms_user must be a valid CMS_profile_user");
 			return false;
@@ -495,7 +495,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDefinition($definition, $haltOnPolymodParsing = true) {
+	public function setDefinition($definition, $haltOnPolymodParsing = true) {
 		global $cms_language;
 		$defXML = new CMS_DOMDocument();
 		try {
@@ -572,7 +572,7 @@ class CMS_row extends CMS_grandFather
 	  * @return string the data from the blocks and the definition file.
 	  * @access public
 	  */
-	function getData(&$language, &$page, &$clientSpace, $visualizationMode, $templateHasPages=false, $rowCanBeEdited=true)
+	public function getData(&$language, &$page, &$clientSpace, $visualizationMode, $templateHasPages=false, $rowCanBeEdited=true)
 	{
 		global $cms_user;
 		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_BLOCK_TAGS, $visualizationMode, $this);
@@ -711,7 +711,7 @@ class CMS_row extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			$sql = "
@@ -735,7 +735,7 @@ class CMS_row extends CMS_grandFather
 	  * @return array(string) The groups represented by their string in an array
 	  * @access public
 	  */
-	function getGroups(){
+	public function getGroups(){
 		$groups_arrayed = $this->_groups->getElements();
 		$groups = array();
 		foreach ($groups_arrayed as $group_arrayed) {
@@ -752,7 +752,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true if the row belongs to that group, false otherwise
 	  * @access public
 	  */
-	function belongsToGroup($group){
+	public function belongsToGroup($group){
 		$grps = $this->_groups->getElementsWithOneValue($group, 1);
 		return (is_array($grps) && $grps);
 	}
@@ -764,7 +764,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function addGroup($group){
+	public function addGroup($group){
 		if (trim($group) && $group == SensitiveIO::sanitizeSQLString($group)) {
 			$groups = $this->getGroups();
 			$group = trim($group);
@@ -785,7 +785,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function delGroup($group){
+	public function delGroup($group){
 		if ($group) {
 			$this->_groups->del($group);
 			return true;
@@ -801,7 +801,7 @@ class CMS_row extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delAllGroups(){
+	public function delAllGroups(){
 		$this->_groups = new CMS_stack();
 	}
 
@@ -811,7 +811,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if (!$this->_uuid) {
 			$this->_uuid = io::uuid();
@@ -855,7 +855,7 @@ class CMS_row extends CMS_grandFather
 		return true;
 	}
 	
-	function getJSonDescription($user, $cms_language, $withDefinition = false) {
+	public function getJSonDescription($user, $cms_language, $withDefinition = false) {
 		$hasClientSpaces = $this->hasClientSpaces();
 		$shortdesc = sensitiveIO::ellipsis($this->getDescription(), 60);
 		if ($shortdesc != nl2br($this->getDescription())) {
@@ -967,7 +967,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		
 		if (!$this->getID() && CMS_rowsCatalog::uuidExists($data['uuid'])) {
 			//check imported uuid. If rows does not have an Id, the uuid must be unique or must be regenerated
@@ -1056,7 +1056,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function convertDefinitions($module) {
+	public function convertDefinitions($module) {
 		$this->setDefinition($module->convertDefinitionString($this->getDefinition(), false, true));
 		return $this->writeToPersistence();
 	}

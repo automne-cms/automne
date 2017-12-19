@@ -62,7 +62,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function CMS_resource($id=0)
+	public function __construct($id=0)
 	{
 		if ($id) {
 			if (SensitiveIO::isPositiveInteger($id)) {
@@ -126,7 +126,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -137,7 +137,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return integer the locksmithData : DB ID of the user who placed the lock
 	  * @access public
 	  */
-	function getLock()
+	public function getLock()
 	{
 		if (is_object($this->_status)) {
 			return $this->_status->getLock();
@@ -152,7 +152,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return integer the locksmithData : DB ID of the user who placed the lock
 	  * @access public
 	  */
-	function getLockDate()
+	public function getLockDate()
 	{
 		if (is_object($this->_status)) {
 			return $this->_status->getLockDate();
@@ -168,7 +168,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function lock(&$user)
+	public function lock(&$user)
 	{
 		if (is_object($this->_status)) {
 			return $this->_status->lock($user);
@@ -183,7 +183,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function unlock()
+	public function unlock()
 	{
 		if (is_object($this->_status)) {
 			return $this->_status->unlock();
@@ -198,7 +198,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return CMS_resourceStatus The resource status
 	  * @access public
 	  */
-	function getStatus()
+	public function getStatus()
 	{
 		return $this->_status;
 	}
@@ -211,7 +211,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function addEdition($edition, &$user)
+	public function addEdition($edition, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Edition addition didn't received a valid user");
@@ -253,7 +253,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function addValidationRefused($edition)
+	public function addValidationRefused($edition)
 	{
 		if ($this->_status->addValidationRefused($edition)) {
 			return true;
@@ -269,7 +269,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function validateEdition($edition)
+	public function validateEdition($edition)
 	{
 		if ($this->_status->delEdition($edition)) {
 			$this->_editors->delAllWithOneValue($edition, 2);
@@ -289,7 +289,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function cancelAllEditions()
+	public function cancelAllEditions()
 	{
 		$this->_status->delAllEditions();
 		$this->resetEditorsStack();
@@ -302,7 +302,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return array(CMS_profile_user) The users, or an empty array if none found
 	  * @access public
 	  */
-	function getEditors($edition = false)
+	public function getEditors($edition = false)
 	{
 		if ($edition) {
 			$usersIDs =  $this->_editors->getElementsWithOneValue($edition, 2);
@@ -326,7 +326,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return CMS_stack The users stack
 	  * @access public
 	  */
-	function getEditorsStack()
+	public function getEditorsStack()
 	{
 		return $this->_editors;
 	}
@@ -337,7 +337,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function resetEditorsStack()
+	public function resetEditorsStack()
 	{
 		$this->_editors = new CMS_stack();
 	}
@@ -348,7 +348,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return integer the resource publication
 	  * @access public
 	  */
-	function getPublication()
+	public function getPublication()
 	{
 		return $this->_status->getPublication();
 	}
@@ -359,7 +359,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return integer the resource location
 	  * @access public
 	  */
-	function getLocation()
+	public function getLocation()
 	{
 		return $this->_status->getLocation();
 	}
@@ -370,7 +370,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return integer the location
 	  * @access public
 	  */
-	function getProposedLocation()
+	public function getProposedLocation()
 	{
 		return $this->_status->getProposedFor();
 	}
@@ -383,7 +383,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setProposedLocation($location, &$user)
+	public function setProposedLocation($location, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -407,7 +407,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function removeProposedLocation()
+	public function removeProposedLocation()
 	{
 		
 		$this->_status->setProposedFor(0);
@@ -426,7 +426,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function validateProposedLocation()
+	public function validateProposedLocation()
 	{
 		if ($this->_status->setLocation($this->_status->getProposedFor())
 			&& $this->_status->setProposedFor(0)) {
@@ -440,7 +440,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true if the resource may move out of user space soon (proposedFor attribute)
 	  * @access public
 	  */
-	function isProposedForOutsideUserspace()
+	public function isProposedForOutsideUserspace()
 	{
 		return $this->_status->getProposedFor(RESOURCE_LOCATION_ARCHIVED)
 			|| $this->_status->getProposedFor(RESOURCE_LOCATION_DELETED);
@@ -454,7 +454,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setPublicationDates($start, $end)
+	public function setPublicationDates($start, $end)
 	{
 		return $this->_status->setPublicationDateStart($start)
 			&& $this->_status->setPublicationDateEnd($end);
@@ -466,7 +466,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return CMS_date the publication date start.
 	  * @access public
 	  */
-	function getPublicationDateStart($public = true)
+	public function getPublicationDateStart($public = true)
 	{
 		return $this->_status->getPublicationDateStart($public);
 	}
@@ -477,7 +477,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return CMS_date the publication date end.
 	  * @access public
 	  */
-	function getPublicationDateEnd($public = true)
+	public function getPublicationDateEnd($public = true)
 	{
 		return $this->_status->getPublicationDateEnd($public);
 	}
@@ -488,7 +488,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			//destroy the resource status
@@ -512,7 +512,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$this->_status->writeToPersistence();
 		$sql_fields = "

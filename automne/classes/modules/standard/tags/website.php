@@ -38,7 +38,7 @@ class CMS_XMLTag_website extends CMS_XMLTag
 	  * @return void
 	  * @access public
 	  */
-	function __construct($name, $attributes, $children, $parameters) {
+	public function __construct($name, $attributes, $children, $parameters) {
 		if (isset($parameters['context']) && $parameters['context']) {
 			$this->_context = $parameters['context'];
 		}

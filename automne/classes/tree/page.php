@@ -129,7 +129,7 @@ class CMS_page extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0)
+	public function __construct($id = 0)
 	{
 		$this->_remindedEditors = new CMS_stack();
 		$this->_lastReminder = new CMS_date();
@@ -185,7 +185,7 @@ class CMS_page extends CMS_resource
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_pageID;
 	}
@@ -196,7 +196,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function isRoot() {
+	public function isRoot() {
 		return ($this->_pageID == APPLICATION_ROOT_PAGE_ID) ? true : false;
 	}
 
@@ -206,7 +206,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function isDraft() {
+	public function isDraft() {
 		$this->_checkTemplate();
 		if (!is_object($this->_template)) {
 			return false;
@@ -221,7 +221,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_resourceStatus The resource status
 	  * @access public
 	  */
-	function getStatus()
+	public function getStatus()
 	{
 		$this->_status->setDraft($this->isDraft());
 		return $this->_status;
@@ -233,7 +233,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_pageTemplate The page template
 	  * @access public
 	  */
-	function getTemplate()
+	public function getTemplate()
 	{
 		$this->_checkTemplate();
 		return $this->_template;
@@ -247,7 +247,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setTemplate($templateID)
+	public function setTemplate($templateID)
 	{
 		if (!SensitiveIO::isPositiveInteger($templateID)) {
 			$this->setError("TemplateID is not a positive integer");
@@ -267,7 +267,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_date The last file creation date
 	  * @access public
 	  */
-	function getLastFileCreationDate()
+	public function getLastFileCreationDate()
 	{
 		return $this->_lastFileCreation;
 	}
@@ -278,7 +278,7 @@ class CMS_page extends CMS_resource
 	  * @return array(CMS_module) The modules
 	  * @access public
 	  */
-	function getModules()
+	public function getModules()
 	{
 		$this->_checkTemplate();
 		if ($this->_template) {
@@ -293,7 +293,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function hasModule($codename)
+	public function hasModule($codename)
 	{
 		$this->_checkTemplate();
 		if ($this->_template) {
@@ -309,7 +309,7 @@ class CMS_page extends CMS_resource
 	  * @return array(CMS_profile_user) The editors
 	  * @access public
 	  */
-	function getRemindedEditors($edition)
+	public function getRemindedEditors($edition)
 	{
 		$elements = $this->_remindedEditors->getElementsWithOneValue($edition, 2);
 		$editors = array();
@@ -328,7 +328,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_stack The reminded editors stack
 	  * @access public
 	  */
-	function getRemindedEditorsStack()
+	public function getRemindedEditorsStack()
 	{
 		return $this->_remindedEditors;
 	}
@@ -340,7 +340,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setRemindedEditorsStack($editorsStack)
+	public function setRemindedEditorsStack($editorsStack)
 	{
 		if (!is_a($editorsStack, "CMS_stack")) {
 			$this->setError("EditorsStack is not a stack");
@@ -358,7 +358,7 @@ class CMS_page extends CMS_resource
 	  * @return string The html url; complete with PATH and website information. False if page not published.
 	  * @access public
 	  */
-	function getHTMLURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT) {
+	public function getHTMLURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT) {
 		if ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED) {
 			$htmlRoot = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
 			$filename = $this->_getHTMLFilename();
@@ -391,7 +391,7 @@ class CMS_page extends CMS_resource
 	  * @return string The url; complete with PATH and website information. Empty string if page not published.
 	  * @access public
 	  */
-	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false, $doNotShorten = false) {
+	public function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false, $doNotShorten = false) {
 		if ($force || ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
 			$ws = $this->getWebsite();
 			$wsURL = '';
@@ -528,7 +528,7 @@ class CMS_page extends CMS_resource
 	  * @return string The path of the linx file, even if it doesn't exists.
 	  * @access public
 	  */
-	function getLinxFilePath()
+	public function getLinxFilePath()
 	{
 		return PATH_PAGES_LINXFILES_FS."/".$this->_getHTMLFilename().".linx";
 	}
@@ -539,7 +539,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true if there is something to print, false otherwise
 	  * @access public
 	  */
-	function getPrintStatus() {
+	public function getPrintStatus() {
 		if (!USE_PRINT_PAGES) {
 			return false;
 		}
@@ -556,7 +556,7 @@ class CMS_page extends CMS_resource
 	  * @return string The content of the page.
 	  * @access public
 	  */
-	function getContent(&$language, $visualizationMode = false) {
+	public function getContent(&$language, $visualizationMode = false) {
 		if (!($language instanceof CMS_language) || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllVisualizationModes())) {
 			$this->setError("Language must be a valid language and visualization mode in the set of possibles");
 			return false;
@@ -617,7 +617,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function regenerate($fromScratch = false)
+	public function regenerate($fromScratch = false)
 	{
 		//regenerate don't work on pages that are not public or which not have website
 		if ($this->getPublication() != RESOURCE_PUBLICATION_PUBLIC || !$this->_checkWebsite()) {
@@ -715,7 +715,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure to write the content to this file.
 	  * @access private
 	  */
-	function writeLinxFile()
+	public function writeLinxFile()
 	{
 		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
 		//get public page content (without linxes process)
@@ -749,7 +749,7 @@ class CMS_page extends CMS_resource
 	  * @return string The redirection code
 	  * @access public
 	  */
-	function redirectionCode($filePath) {
+	public function redirectionCode($filePath) {
 		//replace absolute filePath to DOCUMENT_ROOT one
 		$filePath = str_replace(PATH_REALROOT_FS.'/', '', $filePath);
 		$pos = 0;
@@ -782,7 +782,7 @@ class CMS_page extends CMS_resource
 	  * @return string : HTML meta tags infos infos
 	  * @access public
 	  */
-	function getMetaTags($public = false, $tags = array()) {
+	public function getMetaTags($public = false, $tags = array()) {
 		$website = $this->getWebsite();
 		$favicon = '';
 		$metaDatas = '';
@@ -878,7 +878,7 @@ class CMS_page extends CMS_resource
 	  * @return string The title
 	  * @access public
 	  */
-	function getTitle($public = false)
+	public function getTitle($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -895,7 +895,7 @@ class CMS_page extends CMS_resource
 	  * @return string : the object name
 	  * @access public
 	  */
-	function getTypeLabel($language) {
+	public function getTypeLabel($language) {
 		return $language->getMessage(self::MESSAGE_PAGE_PAGE);
 	}
 
@@ -906,7 +906,7 @@ class CMS_page extends CMS_resource
 	  * @return string The base data url
 	  * @access public
 	  */
-	function getBaseDataURL($public = false)
+	public function getBaseDataURL($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -924,7 +924,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setTitle($data, &$user)
+	public function setTitle($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -949,7 +949,7 @@ class CMS_page extends CMS_resource
 	  * @return string The link-title
 	  * @access public
 	  */
-	function getLinkTitle($public = false)
+	public function getLinkTitle($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -966,7 +966,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setLinkTitle($data, &$user)
+	public function setLinkTitle($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -988,7 +988,7 @@ class CMS_page extends CMS_resource
 	  * @return string The link-title
 	  * @access public
 	  */
-	function getRefreshURL($public = false)
+	public function getRefreshURL($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1006,7 +1006,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setRefreshUrl($data, &$user)
+	public function setRefreshUrl($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1028,7 +1028,7 @@ class CMS_page extends CMS_resource
 	  * @return string The website meta value
 	  * @access public
 	  */
-	function getMetaFromWebsite($meta) {
+	public function getMetaFromWebsite($meta) {
 		if ($this->_checkWebsite()) {
 			return $this->_website->getMeta($meta);
 		} else {
@@ -1043,7 +1043,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_website The website the page belong to
 	  * @access public
 	  */
-	function getWebsite() {
+	public function getWebsite() {
 		if ($this->_checkWebsite()) {
 			return $this->_website;
 		} else {
@@ -1058,7 +1058,7 @@ class CMS_page extends CMS_resource
 	  * @return string The page codename
 	  * @access public
 	  */
-	function getCodename($public = false) {
+	public function getCodename($public = false) {
 		if (!$this->_checkBaseData($public)) {
 			return false;
 		}
@@ -1075,7 +1075,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setCodename($data, &$user, $checkForDuplicate = true) {
+	public function setCodename($data, &$user, $checkForDuplicate = true) {
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
 			return false;
@@ -1110,7 +1110,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function isProtected() {
+	public function isProtected() {
 		return $this->_protected ? true : false;
 	}
 
@@ -1121,7 +1121,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function setProtected($protected) {
+	public function setProtected($protected) {
 		$this->_protected = $protected ? true : false;
 		return true;
 	}
@@ -1132,7 +1132,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function isHTTPS() {
+	public function isHTTPS() {
 		if (io::substr($this->getWebsite()->getURL(true), 0, 8) == "https://") {
 			return true;
 		} else {
@@ -1147,7 +1147,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function setHTTPS($https) {
+	public function setHTTPS($https) {
 		$this->_https = $https ? true : false;
 		return true;
 	}
@@ -1160,7 +1160,7 @@ class CMS_page extends CMS_resource
 	  * @return string The keywords
 	  * @access public
 	  */
-	function getKeywords($public = false, $queryWebsite = true)
+	public function getKeywords($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1178,7 +1178,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setKeywords($data, &$user)
+	public function setKeywords($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1201,7 +1201,7 @@ class CMS_page extends CMS_resource
 	  * @return string The description
 	  * @access public
 	  */
-	function getDescription($public = false, $queryWebsite = true)
+	public function getDescription($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1218,7 +1218,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDescription($data, &$user)
+	public function setDescription($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1241,7 +1241,7 @@ class CMS_page extends CMS_resource
 	  * @return string The category
 	  * @access public
 	  */
-	function getCategory($public = false, $queryWebsite = true)
+	public function getCategory($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1258,7 +1258,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setCategory($data, &$user)
+	public function setCategory($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1281,7 +1281,7 @@ class CMS_page extends CMS_resource
 	  * @return string The author
 	  * @access public
 	  */
-	function getAuthor($public = false, $queryWebsite = true)
+	public function getAuthor($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1298,7 +1298,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setAuthor($data, &$user)
+	public function setAuthor($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1321,7 +1321,7 @@ class CMS_page extends CMS_resource
 	  * @return string The replyto
 	  * @access public
 	  */
-	function getReplyto($public = false, $queryWebsite = true)
+	public function getReplyto($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1339,7 +1339,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setReplyto($data, &$user)
+	public function setReplyto($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1362,7 +1362,7 @@ class CMS_page extends CMS_resource
 	  * @return string The replyto
 	  * @access public
 	  */
-	function getMetas($public = false, $queryWebsite = true)
+	public function getMetas($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1380,7 +1380,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setMetas($data, &$user)
+	public function setMetas($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1403,7 +1403,7 @@ class CMS_page extends CMS_resource
 	  * @return string The copyright
 	  * @access public
 	  */
-	function getCopyright($public = false, $queryWebsite = true)
+	public function getCopyright($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1421,7 +1421,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setCopyright($data, &$user)
+	public function setCopyright($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1444,7 +1444,7 @@ class CMS_page extends CMS_resource
 	  * @return string The language
 	  * @access public
 	  */
-	function getLanguage($public = false, $queryWebsite = true)
+	public function getLanguage($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1468,7 +1468,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setLanguage($data, &$user)
+	public function setLanguage($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1490,7 +1490,7 @@ class CMS_page extends CMS_resource
 	  * @return string The robots
 	  * @access public
 	  */
-	function getRobots($public = false, $queryWebsite = true)
+	public function getRobots($public = false, $queryWebsite = true)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1507,7 +1507,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setRobots($data, &$user)
+	public function setRobots($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1529,7 +1529,7 @@ class CMS_page extends CMS_resource
 	  * @return string The Pragma
 	  * @access public
 	  */
-	function getPragma($public = false)
+	public function getPragma($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1547,7 +1547,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setPragma($data, &$user)
+	public function setPragma($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1569,7 +1569,7 @@ class CMS_page extends CMS_resource
 	  * @return string The refresh
 	  * @access public
 	  */
-	function getRefresh($public = false)
+	public function getRefresh($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1587,7 +1587,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setRefresh($data, &$user)
+	public function setRefresh($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1609,7 +1609,7 @@ class CMS_page extends CMS_resource
 	  * @return integer The reminder periodicity
 	  * @access public
 	  */
-	function getReminderPeriodicity($public = false)
+	public function getReminderPeriodicity($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1627,7 +1627,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setReminderPeriodicity($data, &$user)
+	public function setReminderPeriodicity($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1653,7 +1653,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_date The reminder On date
 	  * @access public
 	  */
-	function getReminderOn($public = false)
+	public function getReminderOn($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1671,7 +1671,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setReminderOn($data, &$user)
+	public function setReminderOn($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1698,7 +1698,7 @@ class CMS_page extends CMS_resource
 	  * @return string The message
 	  * @access public
 	  */
-	function getReminderOnMessage($public = false)
+	public function getReminderOnMessage($public = false)
 	{
 		if (!$this->_checkBaseData($public)) {
 			return false;
@@ -1716,7 +1716,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setReminderOnMessage($data, &$user)
+	public function setReminderOnMessage($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1738,7 +1738,7 @@ class CMS_page extends CMS_resource
 	  * @return CMS_href The redirect link
 	  * @access public
 	  */
-	function getRedirectLink($public = false) {
+	public function getRedirectLink($public = false) {
 		if (!$this->_checkBaseData($public)) {
 			return false;
 		}
@@ -1755,7 +1755,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setRedirectLink($link, &$user)
+	public function setRedirectLink($link, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("Didn't received a valid user");
@@ -1781,7 +1781,7 @@ class CMS_page extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function touchLastReminder()
+	public function touchLastReminder()
 	{
 		$this->_lastReminder->setNow();
 	}
@@ -1793,7 +1793,7 @@ class CMS_page extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function validateProposedLocation()
+	public function validateProposedLocation()
 	{
 		$outside = $this->isProposedForOutsideUserspace();
 		parent::validateProposedLocation();
@@ -1809,7 +1809,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function validateEdition($edition)
+	public function validateEdition($edition)
 	{
 		//change the remindedEditors stack
 		if ($edition & RESOURCE_EDITION_CONTENT || $edition & RESOURCE_EDITION_BASEDATA) {
@@ -1891,7 +1891,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true if useable, false otherwise
 	  * @access public
 	  */
-	function isUseable()
+	public function isUseable()
 	{
 		return ($this->_status->getLocation() == RESOURCE_LOCATION_ARCHIVED ||
 				$this->_status->getLocation() == RESOURCE_LOCATION_DELETED)
@@ -2027,7 +2027,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true if deletion went without errors, false otherwise
 	  * @access public
 	  */
-	function deleteFiles()
+	public function deleteFiles()
 	{
 		//delete HTML page
 		@unlink($this->_getHTMLFilePath(PATH_RELATIVETO_FILESYSTEM)."/".$this->_getHTMLFilename());
@@ -2048,7 +2048,7 @@ class CMS_page extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		parent::writeToPersistence();
 
@@ -2199,7 +2199,7 @@ class CMS_page extends CMS_resource
 	  * @param boolean $dontDuplicateContent If true, the content of the page is not duplicated
 	  * @return CMS_page newly created, or null on error
 	  */
-	function duplicate(&$user, $templateID=0, $dontDuplicateContent = false)
+	public function duplicate(&$user, $templateID=0, $dontDuplicateContent = false)
 	{
 		$pg = null;
 		if ($user->hasPageClearance($this->getID(), CLEARANCE_PAGE_VIEW)
@@ -2260,7 +2260,7 @@ class CMS_page extends CMS_resource
 	  * @param CMS_user user, the user processing to creation
 	  * @return boolean true on success, false on failure
 	  */
-	function duplicateContent(&$user, &$page)
+	public function duplicateContent(&$user, &$page)
 	{
 		$_proceed = true ;
 		if (!is_a($page, "CMS_page") || !is_a($user,"CMS_profile_user")) {
@@ -2288,7 +2288,7 @@ class CMS_page extends CMS_resource
 	  * @return void
 	  * @access private
 	  */
-	static function getAllVisualizationModes()
+	public static function getAllVisualizationModes()
 	{
 		return array(	PAGE_VISUALMODE_FORM,
 						PAGE_VISUALMODE_HTML_PUBLIC,

@@ -145,7 +145,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0)
+	public function __construct($id = 0)
 	{
 		// Initiate Stack objects
 		$this->_pageClearances = new CMS_stack();
@@ -182,16 +182,15 @@ class CMS_profile extends CMS_grandFather
 					
 					//Get values Catch errors?
 					if (
-					  	!$this->_pageClearances->
-					    	setTextDefinition($data["pageClearancesStack_pr"]) ||
-						!$this->_validationClearances->
-					  		setTextDefinition($data["validationClearancesStack_pr"]) ||
-						!$this->_moduleClearances->
-							setTextDefinition($data["moduleClearancesStack_pr"]) ||
-						!$this->_templateGroupsDenied->
-							setTextDefinition($data["templateGroupsDeniedStack_pr"]) ||
-						!$this->_rowGroupsDenied->
-							setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
+					  	!$this->_pageClearances->setTextDefinition($data["pageClearancesStack_pr"])
+					  	||
+						!$this->_validationClearances->setTextDefinition($data["validationClearancesStack_pr"])
+						||
+						!$this->_moduleClearances->setTextDefinition($data["moduleClearancesStack_pr"])
+						||
+						!$this->_templateGroupsDenied->setTextDefinition($data["templateGroupsDeniedStack_pr"])
+						||
+						!$this->_rowGroupsDenied->setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
 							
 						$this->setError("Incorrect Stack formation in profile id ".$id);
 					}
@@ -210,18 +209,13 @@ class CMS_profile extends CMS_grandFather
 				
 				//Get values Catch errors?
 				if (
-				  	!$this->_pageClearances->
-				    	setTextDefinition($data["pageClearancesStack_pr"]) ||
-					!$this->_validationClearances->
-				  		setTextDefinition($data["validationClearancesStack_pr"]) ||
-					!$this->_moduleClearances->
-						setTextDefinition($data["moduleClearancesStack_pr"]) ||
-					!$this->_templateGroupsDenied->
-						setTextDefinition($data["templateGroupsDeniedStack_pr"]) ||
-					!$this->_rowGroupsDenied->
-						setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
+				  	!$this->_pageClearances->setTextDefinition($data["pageClearancesStack_pr"]) ||
+					!$this->_validationClearances->setTextDefinition($data["validationClearancesStack_pr"]) ||
+					!$this->_moduleClearances->setTextDefinition($data["moduleClearancesStack_pr"]) ||
+					!$this->_templateGroupsDenied->setTextDefinition($data["templateGroupsDeniedStack_pr"]) ||
+					!$this->_rowGroupsDenied->setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
 						
-					$this->setError("Incorrect Stack formation in profile id ".$id);
+					$this->setError("Incorrect Stack formation in profile id ".$this->_id);
 				}
 			} else {
 				$this->setError("Id is not a positive integer nor array");
@@ -244,7 +238,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	function getId()
+	public function getId()
 	{
 		return $this->_id;
 	}
@@ -256,7 +250,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setAdminClearance($adminClearance)
+	public function setAdminClearance($adminClearance)
 	{
 		$sumAllAdminClearances = array_sum(array_keys($this->getAllAdminClearances()));
 		if ($sumAllAdminClearances >= $adminClearance && 
@@ -274,7 +268,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addAdminClearance($adminClearance)
+	public function addAdminClearance($adminClearance)
 	{
 		$adminClearance = (int) $adminClearance;
 		$sumAllAdminClearances = array_sum(array_keys($this->getAllAdminClearances()));
@@ -293,7 +287,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	function getAdminClearance()
+	public function getAdminClearance()
 	{
 		return $this->_adminClearance;
 	}
@@ -305,7 +299,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasAdminClearance($clearance)
+	public function hasAdminClearance($clearance)
 	{
 		return ($this->_adminClearance & $clearance) || ($this->_adminClearance & CLEARANCE_ADMINISTRATION_EDITVALIDATEALL);
 	}
@@ -318,7 +312,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasAdminAccess()
+	public function hasAdminAccess()
 	{
 		return $this->_adminClearance || /*$this->hasValidationClearance() ||*/ $this->hasEditablePages() || $this->hasEditableModules();
 	}
@@ -330,7 +324,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setPageClearances($pageClearances)
+	public function setPageClearances($pageClearances)
 	{
 		if (is_a($pageClearances, "CMS_stack")) {
 			$this->_pageClearances = $pageClearances;
@@ -346,7 +340,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addPageClearances($pageClearances)
+	public function addPageClearances($pageClearances)
 	{
 		if (!is_a($pageClearances, "CMS_stack")) {
 			$this->setError('Stack object required: '.$pageClearances);
@@ -362,7 +356,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_stack()
 	  * @access public
 	  */
-	function getPageClearances()
+	public function getPageClearances()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			$this->_pageClearances = new CMS_stack();
@@ -377,7 +371,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delPageClearances()
+	public function delPageClearances()
 	{
 		$this->_pageClearances->emptyStack();
 	}
@@ -389,7 +383,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delPageClearance($pageid)
+	public function delPageClearance($pageid)
 	{
 		if (!is_null($this->_pageClearances->getElementsWithOneValue($pageid,1))) {
 			$this->_pageClearances->delAllWithOneValue($pageid, 1);
@@ -402,7 +396,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer)
 	  * @access public
 	  */
-	function getViewablePageClearanceRoots()
+	public function getViewablePageClearanceRoots()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			return array(APPLICATION_ROOT_PAGE_ID);
@@ -423,7 +417,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasViewvablePages()
+	public function hasViewvablePages()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			return true;
@@ -444,7 +438,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer)
 	  * @access public
 	  */
-	function getEditablePageClearanceRoots()
+	public function getEditablePageClearanceRoots()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			return array(APPLICATION_ROOT_PAGE_ID);
@@ -465,7 +459,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasEditablePages()
+	public function hasEditablePages()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			return true;
@@ -486,7 +480,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasEditableModules()
+	public function hasEditableModules()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			return true;
@@ -510,7 +504,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasPageClearance($pageId, $clearance)
+	public function hasPageClearance($pageId, $clearance)
 	{
 		static $clearances;
 		$hash = md5($this->getId().'-'.serialize(func_get_args()));
@@ -539,7 +533,7 @@ class CMS_profile extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getPageClearanceRoot($pageId, $outputCMS_page = true) {
+	public function getPageClearanceRoot($pageId, $outputCMS_page = true) {
 		static $clearances;
 		$hash = md5($this->getId().'-'.serialize(func_get_args()));
 		if (isset($clearances[$hash])) {
@@ -586,7 +580,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addPageClearance($pageId, $clearance, $overwrite)
+	public function addPageClearance($pageId, $clearance, $overwrite)
 	{
 		if (!SensitiveIO::isInSet($clearance, $this->getAllPageClearances())) {
 			$this->setError("Invalid Page Clearance: ".$clearance);	
@@ -611,7 +605,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setModuleClearances($moduleClearances)
+	public function setModuleClearances($moduleClearances)
 	{
 		if (is_a($moduleClearances, "CMS_stack")) {
 			$this->_moduleClearances = $moduleClearances;
@@ -627,7 +621,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addModuleClearances($moduleClearances)
+	public function addModuleClearances($moduleClearances)
 	{
 		if (!is_a($moduleClearances, "CMS_stack")) {
 			$this->setError('Stack object required: '.$moduleClearances);
@@ -643,7 +637,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_stack()
 	  * @access public
 	  */
-	function getModuleClearances()
+	public function getModuleClearances()
 	{
 		return $this->_moduleClearances;
 	}
@@ -654,7 +648,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delModuleClearances()
+	public function delModuleClearances()
 	{
 		$this->_moduleClearances->emptyStack();
 	}
@@ -666,7 +660,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delModuleClearance($moduleCodename)
+	public function delModuleClearance($moduleCodename)
 	{
 		if (!is_null($this->_moduleClearances->getElementsWithOneValue($moduleCodename,1))) {
 			$this->_moduleClearances->delAllWithOneValue($moduleCodename, 1);
@@ -681,7 +675,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasModuleClearance($moduleCodename, $clearance)
+	public function hasModuleClearance($moduleCodename, $clearance)
 	{
 		return ($this->_hasClearance($this->_moduleClearances, $moduleCodename, $clearance)
 			|| $this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL));
@@ -697,7 +691,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addModuleClearance($moduleCodename, $clearance, $overwrite)
+	public function addModuleClearance($moduleCodename, $clearance, $overwrite)
 	{
 		$clearances = $this->getAllModuleClearances();
 		if (!isset($clearances[$clearance])) {
@@ -721,7 +715,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setValidationClearances($validationClearances)
+	public function setValidationClearances($validationClearances)
 	{
 		if (is_a($validationClearances, "CMS_stack")) {
 			$this->_validationClearances = $validationClearances;
@@ -735,7 +729,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addValidationClearances($validationClearances)
+	public function addValidationClearances($validationClearances)
 	{
 		if (!is_a($validationClearances, "CMS_stack")) {
 			$this->setError('Stack object required: '.$validationClearances);
@@ -751,7 +745,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_stack
 	  * @access public
 	  */
-	function getValidationClearances()
+	public function getValidationClearances()
 	{
 		return $this->_validationClearances;
 	}
@@ -762,7 +756,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delValidationClearances()
+	public function delValidationClearances()
 	{
 		$this->_validationClearances->emptyStack();
 		$this->_validationClearances->setValuesByAtom(1);
@@ -775,7 +769,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delValidationClearance($moduleCodename)
+	public function delValidationClearance($moduleCodename)
 	{
 		if ($this->hasValidationClearance($moduleCodename)) {
 			$this->_validationClearances->delAllWithOneValue($moduleCodename, 1);
@@ -789,7 +783,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasValidationClearance($moduleCodename = false)
+	public function hasValidationClearance($moduleCodename = false)
 	{
 		if ($moduleCodename) {
 			$clearanceOk = false;
@@ -813,7 +807,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addValidationClearance($moduleCodename)
+	public function addValidationClearance($moduleCodename)
 	{
 		$clearance = $this->_validationClearances->getElementsWithOneValue($moduleCodename, 1);
 		if (!isset($clearance[0][0]) || !$clearance[0][0]) {
@@ -853,7 +847,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setTemplateGroupsDenied($templateGroupsDenied)
+	public function setTemplateGroupsDenied($templateGroupsDenied)
 	{
 		if (is_a($templateGroupsDenied, "CMS_stack") && $templateGroupsDenied->getValuesByAtom() == 1) {
 			if (!$this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -872,7 +866,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addTemplateGroupsDenied($templateGroupsDenied)
+	public function addTemplateGroupsDenied($templateGroupsDenied)
 	{
 		if (!is_a($templateGroupsDenied, "CMS_stack")) {
 			$this->setError('Stack object required');
@@ -912,7 +906,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_stack()
 	  * @access public
 	  */
-	function getTemplateGroupsDenied()
+	public function getTemplateGroupsDenied()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			$this->_templateGroupsDenied = new CMS_stack();
@@ -930,7 +924,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasTemplateGroupsDenied($templateGroup)
+	public function hasTemplateGroupsDenied($templateGroup)
 	{
 		$template_denied = $this->_templateGroupsDenied->getElementsWithOneValue($templateGroup, 1);
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL) || !isset($template_denied[0]) || !$template_denied[0]) {
@@ -946,7 +940,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setRowGroupsDenied($rowGroupsDenied)
+	public function setRowGroupsDenied($rowGroupsDenied)
 	{
 		if (is_a($rowGroupsDenied, "CMS_stack") && $rowGroupsDenied->getValuesByAtom() == 1) {
 			if (!$this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -966,7 +960,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addRowGroupsDenied($rowGroupsDenied)
+	public function addRowGroupsDenied($rowGroupsDenied)
 	{
 		if (!is_a($rowGroupsDenied, "CMS_stack")) {
 			$this->setError('Stack object required');
@@ -1006,7 +1000,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_stack()
 	  * @access public
 	  */
-	function getRowGroupsDenied()
+	public function getRowGroupsDenied()
 	{
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			$this->_rowGroupsDenied = new CMS_stack();
@@ -1024,7 +1018,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasRowGroupsDenied($rowGroup)
+	public function hasRowGroupsDenied($rowGroup)
 	{
 		$row_denied = $this->_rowGroupsDenied->getElementsWithOneValue($rowGroup, 1);
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL) || !isset($row_denied[0]) || !$row_denied[0]) {
@@ -1039,7 +1033,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function resetClearances() {
+	public function resetClearances() {
 		//admin clearance
 		$this->_adminClearance = 0;
 		// Initiate Stack objects
@@ -1061,7 +1055,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function addGroup($group) {
+	public function addGroup($group) {
 		if (sensitiveIO::isPositiveInteger($group)) {
 			//instanciate group to add
 			$group = CMS_profile_usersGroupsCatalog::getByID($group);
@@ -1152,7 +1146,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_moduleCategoriesClearances
 	  * @access public
 	  */
-	function getModuleCategoriesClearances()
+	public function getModuleCategoriesClearances()
 	{
 		return $this->_moduleCategoriesClearances;
 	}
@@ -1164,7 +1158,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function setModuleCategoriesClearances($clearances)
+	public function setModuleCategoriesClearances($clearances)
 	{
 		if (is_a($clearances, "CMS_moduleCategoriesClearances")) {
 			$this->_moduleCategoriesClearances = $clearances;
@@ -1182,7 +1176,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_moduleCategoriesClearances
 	  * @access public
 	  */
-	function getModuleCategoriesClearancesStack($moduleCodename = false)
+	public function getModuleCategoriesClearancesStack($moduleCodename = false)
 	{
 		return $this->_moduleCategoriesClearances->getCategoriesClearances($moduleCodename);
 	}
@@ -1194,7 +1188,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function setModuleCategoriesClearancesStack($clearances)
+	public function setModuleCategoriesClearancesStack($clearances)
 	{
 		if (is_a($clearances, "CMS_stack")) {
 			$this->_moduleCategoriesClearances->setCategoriesClearances($clearances);
@@ -1211,7 +1205,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function addModuleCategoriesClearancesStack($clearances)
+	public function addModuleCategoriesClearancesStack($clearances)
 	{
 		if (!is_a($clearances, "CMS_stack")) {
 			$this->setError('CMS_stack object expected');
@@ -1232,7 +1226,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function deleteCategoriesClearances()
+	public function deleteCategoriesClearances()
 	{
 		if ($this->_moduleCategoriesClearances->deleteCategoriesClearances()) {
 			return true;
@@ -1252,7 +1246,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
-	function getRootModuleCategories($module = false, $return_objects = false)
+	public function getRootModuleCategories($module = false, $return_objects = false)
 	{
 		return $this->getRootCategories(false, $module, $return_objects);
 	}
@@ -1268,7 +1262,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
-	function getRootCategories($clearance = false, $module = false, $return_objects = false, $strict = true) {
+	public function getRootCategories($clearance = false, $module = false, $return_objects = false, $strict = true) {
 		static $rootCategories;
 		$mode = 'mode_'.(string)$this->_id.'_'.($clearance === false ? 'false' : (string)$clearance).'_'.(string)$module.'_'.(string)$strict;
 		if (!isset($rootCategories[$mode])) {
@@ -1324,7 +1318,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
-	function getRootModuleCategoriesDenied($module = false, $return_objects = false)
+	public function getRootModuleCategoriesDenied($module = false, $return_objects = false)
 	{
 		$categories = $this->getRootCategories(CLEARANCE_MODULE_NONE, $module, $return_objects);
 		$categories = (is_array($categories)) ? array_merge(CMS_moduleCategories_catalog::getDeletedCategories($module, $return_objects),$categories) : CMS_moduleCategories_catalog::getDeletedCategories($module, $return_objects);
@@ -1341,7 +1335,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
-	function getRootModuleCategoriesReadable($module = false, $return_objects = false)
+	public function getRootModuleCategoriesReadable($module = false, $return_objects = false)
 	{
 		$items = $this->getRootCategories(CLEARANCE_MODULE_VIEW, $module, $return_objects, false);
 		if (is_array($items) && $items) {
@@ -1359,7 +1353,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
-	function getRootModuleCategoriesWritable($module = false, $return_objects = false)
+	public function getRootModuleCategoriesWritable($module = false, $return_objects = false)
 	{
 		$items = $this->getRootCategories(CLEARANCE_MODULE_EDIT, $module, $return_objects, false);
 		if (is_array($items) && $items) {
@@ -1377,7 +1371,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
-	function getRootModuleCategoriesManagable($module = false, $return_objects = false)
+	public function getRootModuleCategoriesManagable($module = false, $return_objects = false)
 	{
 		$items = $this->getRootCategories(CLEARANCE_MODULE_MANAGE, $module, $return_objects, false);
 		if (is_array($items) && $items) {
@@ -1395,7 +1389,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasModuleCategoryClearance($category_id, $clearance = CLEARANCE_MODULE_VIEW, $module = false)
+	public function hasModuleCategoryClearance($category_id, $clearance = CLEARANCE_MODULE_VIEW, $module = false)
 	{
 		if (!SensitiveIO::isPositiveInteger($category_id)) {
 			return false;
@@ -1445,7 +1439,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return array
 	  * @access public
 	  */
-	function filterModuleCategoriesClearance($categories, $clearance = CLEARANCE_MODULE_VIEW, $module = false, $strict = false)
+	public function filterModuleCategoriesClearance($categories, $clearance = CLEARANCE_MODULE_VIEW, $module = false, $strict = false)
 	{
 		if (!is_array($categories)) {
 			return array();
@@ -1505,6 +1499,7 @@ class CMS_profile extends CMS_grandFather
 		}
 		return $returnedFilteredCategories;
 	}
+	
 	protected function _filterModuleCategoriesClearanceRecursion($nLevelArray, &$matchingCats, &$deniedCats, $fatherRights) {
 		$returnedMatchingCats = array();
 		foreach ($nLevelArray as $catID => $subCats) {
@@ -1598,7 +1593,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			$sql = "
@@ -1619,7 +1614,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 			administrationClearance_pr='".SensitiveIO::sanitizeSQLString($this->_adminClearance)."',
@@ -1665,7 +1660,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __clone() {    
+	public function __clone() {    
     	// clone Stack objects
 		$this->_pageClearances = clone $this->_pageClearances;
 		$this->_validationClearances = clone $this->_validationClearances;

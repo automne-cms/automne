@@ -120,7 +120,7 @@ class CMS_href extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($textDefinition = '')
+	public function __construct($textDefinition = '')
 	{
 		if ($textDefinition != '') {
 			$this->_textDefinition = $textDefinition;
@@ -166,7 +166,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string The text definition based on the current elements
 	  * @access public
 	  */
-	function getTextDefinition()
+	public function getTextDefinition()
 	{
 		// Link Type
 		$arr = array();
@@ -199,7 +199,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string the target
 	  * @access public
 	  */
-	function getTarget()
+	public function getTarget()
 	{
 		return $this->_target;
 	}
@@ -211,7 +211,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setTarget($s)
+	public function setTarget($s)
 	{
 		$this->_target = $s;
 		return null;
@@ -223,7 +223,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string the label
 	  * @access public
 	  */
-	function getLabel()
+	public function getLabel()
 	{
 		return str_replace('{{href}}', '', $this->_label);
 	}
@@ -234,7 +234,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string the separator
 	  * @access public
 	  */
-	function getSeparator()
+	public function getSeparator()
 	{
 		return $this->_separator;
 	}
@@ -246,7 +246,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setLabel($s)
+	public function setLabel($s)
 	{
 		$s = preg_replace("#(\r\n)|(\n)|(\r)#", " ", $s);
 		$this->_label = str_replace($this->_separator, '', $s);
@@ -258,7 +258,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string The link type
 	  * @access public
 	  */
-	function getLinkType()
+	public function getLinkType()
 	{
 		return $this->_linkType;
 	}
@@ -270,7 +270,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setLinkType($type)
+	public function setLinkType($type)
 	{
 		if (!SensitiveIO::isInSet($type, CMS_resource::getAllLinkTypes())) {
 			$this->setError("Type not in the valid set");
@@ -286,7 +286,7 @@ class CMS_href extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	function getInternalLink()
+	public function getInternalLink()
 	{
 		return $this->_internalLink;
 	}
@@ -297,7 +297,7 @@ class CMS_href extends CMS_grandFather
 	  * @return CMS_page
 	  * @access public
 	  */
-	function getInternalLinkPage()
+	public function getInternalLinkPage()
 	{
 		if (io::isPositiveInteger($this->_internalLink)) {
 			return CMS_tree::getPageByID($this->_internalLink);
@@ -314,7 +314,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setInternalLink($pageID)
+	public function setInternalLink($pageID)
 	{
 		$this->_internalLink = $pageID;
 		if (SensitiveIO::isPositiveInteger($pageID)) {
@@ -329,7 +329,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string The URL
 	  * @access public
 	  */
-	function getExternalLink()
+	public function getExternalLink()
 	{
 		return $this->_externalLink;
 	}
@@ -342,7 +342,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setExternalLink($url)
+	public function setExternalLink($url)
 	{
 		if (io::substr($url, 0, 4) == "http" 
 				|| io::substr($url, 0, 3) == "ftp"
@@ -374,7 +374,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string The file
 	  * @access public
 	  */
-	function getFileLink($withPath = false, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true)
+	public function getFileLink($withPath = false, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true)
 	{
 		if ($withPath) {
 			if (class_exists("CMS_resource")) {
@@ -416,7 +416,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setFileLink($s, $module = '')
+	public function setFileLink($s, $module = '')
 	{
 		$this->_fileLink = $s;
 		if ($s != '') {
@@ -434,7 +434,7 @@ class CMS_href extends CMS_grandFather
 	  * @return array(key=>value)
 	  * @access public
 	  */
-	function getAttributes()
+	public function getAttributes()
 	{
 		return $this->_attributes;
 	}
@@ -445,7 +445,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string all attribute ready to be inserted int oa A XHTML tag
 	  * @access public
 	  */
-	function getAttributesString()
+	public function getAttributesString()
 	{
 		$s = '';
 		if (is_array($this->_attributes) && $this->_attributes) {
@@ -464,7 +464,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setAttributes($attrs)
+	public function setAttributes($attrs)
 	{
 		if (is_array($attrs)) {
 			$this->_attributes = $attrs;
@@ -481,7 +481,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string, the value corresponding to key
 	  * @access public
 	  */
-	function getAttribute($k)
+	public function getAttribute($k)
 	{
 		return $this->_attributes[io::strtolower($k)];
 	}
@@ -494,7 +494,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setAttribute($k, $v)
+	public function setAttribute($k, $v)
 	{
 		$this->_attributes[io::strtolower($k)] = str_replace('"', "", io::strtolower($v));
 		return true;
@@ -507,7 +507,7 @@ class CMS_href extends CMS_grandFather
 	  * @return array()
 	  * @access public
 	  */
-	function getPopup()
+	public function getPopup()
 	{
 		return $this->_popup;
 	}
@@ -520,7 +520,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setPopup($width, $height)
+	public function setPopup($width, $height)
 	{
 		$this->_popup['width'] = (int) $width;
 		$this->_popup['height'] = (int) $height;
@@ -536,7 +536,7 @@ class CMS_href extends CMS_grandFather
 	  * @return string, the XHTML Tag
 	  * @access public
 	  */
-	function getHTML($label=false, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $attrs = false, $hrefOnly = false)
+	public function getHTML($label=false, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $attrs = false, $hrefOnly = false)
 	{
 		if ($label) {
 			$this->_label = $label;
@@ -610,7 +610,7 @@ class CMS_href extends CMS_grandFather
 	  * @return boolean true if good href found
 	  * @access public
 	  */
-	function hasValidHREF()
+	public function hasValidHREF()
 	{
 		switch ($this->_linkType) {
 		case RESOURCE_LINK_TYPE_INTERNAL:

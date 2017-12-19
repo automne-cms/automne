@@ -386,7 +386,7 @@ $jscontent = <<<END
 		} else {
 			clickedLetter = null;
 		}
-		usersWindow.launchSearch();
+		usersWindow.launchSearch(false);
 	}
 	var lettersToolbar = {
 		xtype:	'toolbar',
@@ -397,7 +397,7 @@ $jscontent = <<<END
 	usersWindow.launchSearch = function(keepPage) {
 		var formValues = Ext.getCmp('usersSearchPanel').getForm().getValues();
 		store.reload({params:{
-			start:			keepPage ? store.lastOptions.params.start : 0,
+			start:			!keepPage ? 0 : store.lastOptions.params.start ,
 			limit:			{$recordsPerPage},
 			groupId:		formValues.groups,
 			search:			formValues.search,
@@ -425,7 +425,7 @@ $jscontent = <<<END
 				labelAlign: 	'top',
 				keys: {
 					key: 			Ext.EventObject.ENTER,
-					handler: 		usersWindow.launchSearch,
+					handler: 		function() {usersWindow.launchSearch(false)},
 					scope:			usersWindow
 				},
 				items:[{
@@ -434,7 +434,7 @@ $jscontent = <<<END
 					name: 			'search',
 					anchor:			'100%',
 					listeners:		{'valid':{
-						fn: 			usersWindow.launchSearch, 
+						fn: 			function() {usersWindow.launchSearch(false)}, 
 						options:		{buffer:300}
 					}}
 		        },{

@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: form.php,v 1.7 2010/03/08 16:43:26 sebastien Exp $
@@ -19,7 +19,7 @@
   *
   * @package Automne
   * @subpackage cms_forms
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_forms_formular extends CMS_grandFather {
@@ -28,7 +28,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	const MESSAGE_CMS_FORMS_MALFORMED_FIELDS = 68;
 	const MESSAGE_CMS_FORMS_REQUIRED_FIELDS = 67;
 	const MESSAGE_CMS_FORMS_TOKEN_EXPIRED = 91;
-	
+
 	const ALLOW_FORM_SUBMIT = 1;
 	const REMOVE_FORM_SUBMIT = 0;
 	/**
@@ -40,59 +40,66 @@ class CMS_forms_formular extends CMS_grandFather {
 
 	/**
 	 * Integer corresponding to cms_profile_user ID known as media owner
-	 * 
+	 *
 	 * @var integer
 	 * @access private
 	 */
 	protected $_ownerID;
 
 	/**
-	 * 
+	 *
 	 * @var CMS_language
 	 * @access private
 	 */
 	protected $_language;
-	
+
 	/**
 	 * Form name
 	 * @var string
 	 * @access private
 	 */
 	protected $_name;
-	
+
 	/**
 	 * Full XHTML source
 	 * @var string
 	 * @access private
 	 */
 	protected $_source;
-	
+
 	/**
 	 * Public means form can receive data
 	 * @var boolean
 	 * @access private
 	 */
 	protected $_public;
-	
+
 	/**
 	 * Max number of responses per user for this form
 	 * @var integer
 	 * @access private
 	 */
 	protected $_responses ;
-	
+
+	/**
+	 * Protected means a captcha will be displayed
+	 * @var boolean
+	 * @access private
+	 */
+	protected $_protected;
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @access public
-	 * @param integer $id 
+	 * @param integer $id
 	 * @param boolean $public if only public data to retrieve
-	 * @param CMS_profile_user $cms_user 
+	 * @param CMS_profile_user $cms_user
 	 */
-	function __construct($id, $cms_user = false) {
+	public function __construct($id, $cms_user = false) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->setError("Id is not a positive integer");
+				$this->raiseError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -114,9 +121,10 @@ class CMS_forms_formular extends CMS_grandFather {
 				$this->_ownerID = (int) $data["owner_frm"];
 				$this->_language = new CMS_language($data["language_frm"]);
 				$this->_responses = (int) $data["responses_frm"];
-				
+				$this->_protected = (!isset($data["protected_frm"]) || !$data["protected_frm"]) ? false : true;
+
 			} else {
-				$this->setError("Unknown ID :".$id);
+				$this->raiseError("Unknown ID :".$id);
 			}
 		} else {
 			$this->_public = true;
@@ -126,26 +134,26 @@ class CMS_forms_formular extends CMS_grandFather {
 			$this->_language = CMS_languagesCatalog::getDefaultLanguage();
 		}
 	}
-	
+
 	/**
 	 * This label is only used when printign resources in workflow tables
-	 * 
+	 *
 	 * @access public
 	 * @return string
 	 */
-	function getValidationLabel() {
+	public function getValidationLabel() {
 		return (string) $this->getAttribute("name");
 	}
-	
+
 	/**
 	  * Getter for the ID
 	 * @access public
 	 * @return integer
 	 */
-	function getID() {
+	public function getID() {
 		return $this->_formID;
 	}
-	
+
 	/**
 	 * Getter for any private attribute on this class
 	 *
@@ -153,11 +161,11 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @param string $name
 	 * @return string
 	 */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
-	
+
 	/**
 	 * Setter for any private attribute on this class
 	 *
@@ -165,75 +173,75 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @param string $name name of attribute to set
 	 * @param $value , the value to give
 	 */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		$name = '_'.$name;
 		$this->$name = $value;
 		return true;
 	}
-	
+
 	/**
 	 * Get the language
-	 * 
+	 *
 	 * @access public
 	 * @return CMS_language
 	 */
-	function &getLanguage() {
+	public function &getLanguage() {
 		return $this->_language;
 	}
-	
+
 	/**
 	 * @access public
-	 * @param  $language 
+	 * @param  $language
 	 * @return CMS_language
 	 */
-	function setLanguage($language) {
+	public function setLanguage($language) {
 		$this->_language = $language;
 		return true;
 	}
-	
+
 	/**
 	 * Is form pubic ?
 	 *
 	 * @access public
 	 * @return boolean
 	 */
-	function isPublic() {
+	public function isPublic() {
 		return ($this->_public) ? true : false;
 	}
-	
+
 	/**
 	 * Get the resource's owner
-	 * 
+	 *
 	 * @access public
 	 * @return CMS_profile_user, or null if none found
 	 */
-	function getOwner() {
+	public function getOwner() {
 		if ($this->_ownerID > 0) {
 			return CMS_profile_usersCatalog::getByID($this->_ownerID);
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Get the CMS_forms_formularCategories object representing
 	 * relations between this object and modules categories
-	 * 
+	 *
 	 * @access public
 	 * @return CMS_forms_formularCategories
 	 */
-	function getCategories() {
+	public function getCategories() {
 		if ($this->getID() > 0) {
 			return new CMS_forms_formularCategories($this);
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Get content for this formular means a PHP/XHTML source code executable
 	 * representing full working form
-	 * 
+	 *
 	 * @param constant $actionParams : add some params to form execution (default : false, return form just as it is in db)
 	 *  - self::REMOVE_FORM_SUBMIT : form can't be submitted, throw js alert message
 	 *  - self::ALLOW_FORM_SUBMIT : form can be submitted, add form action, hidden fields, selected values, etc. (used in public mode)
@@ -241,7 +249,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @access public
 	 * @return XHTML string
 	 */
-	function getContent($actionParams = false, $fieldsError = array()) {
+	public function getContent($actionParams = false, $fieldsError = array()) {
 		global $cms_language;
 		if ($actionParams === false) {
 			return $this->_source;
@@ -266,22 +274,25 @@ class CMS_forms_formular extends CMS_grandFather {
 				//then convert back into XHTML
 				$source = $xml2Array->toXML($xmlArray);
 				//add target and hidden fields
-				$source = preg_replace('#<form([^>]+)>#U', 
+				$source = preg_replace('#<form([^>]+)>#U',
 				'<form action="'.$_SERVER["SCRIPT_NAME"].(isset($_SERVER['QUERY_STRING']) ? '?'.sensitiveIO::sanitizeHTMLString($_SERVER['QUERY_STRING']) : '').'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
 				'<input type="hidden" name="cms_action" value="validate" />'."\n".
 				'<input type="hidden" name="atm-token" value="'.CMS_session::getToken(MOD_CMS_FORMS_CODENAME).'" />'."\n".
 				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".
 				'<input type="hidden" name="referer" value="'.$referer.'" />'."\n"
 				, $source);
+				if($this->_protected){
+					$source = $this->addCaptchaToSource($source);
+				}
 				//pr(io::htmlspecialchars($source));
 			break;
 		}
 		return $source;
 	}
-	
+
 	/**
 	 * Recursive method to add all selected values into a multidimentionnal array representing a formular source
-	 * 
+	 *
 	 * @param multidimentionnal array &$definition : the XML definition to treat (by reference)
 	 * @param array $fields : all form fields to get default values
 	 * @param array $fieldsError : all form fields malformed or required
@@ -341,19 +352,19 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->setError("Malformed definition to compute : ".print_r($definition, true));
+			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Check all input tags in XHTML source (cause IE sometimes remove input type values)
-	 * 
+	 *
 	 * @param string $source, the xhtml source to check
 	 * @access public
 	 * @return string, the xhtml source checked
 	 */
-	function checkInputs($source) {
+	public function checkInputs($source) {
 		//and add already selected values (from $_POST global values)
 		$replace = array(
 			'&' => '&amp;'
@@ -367,10 +378,10 @@ class CMS_forms_formular extends CMS_grandFather {
 		$source = $xml2Array->toXML($xmlArray);
 		return $source;
 	}
-	
+
 	/**
 	 * Recursive method to check all input tags in XHTML source (cause IE sometimes remove input type values)
-	 * 
+	 *
 	 * @param multidimentionnal array &definition : the XML definition to treat (by reference)
 	 * @access private
 	 * @return void
@@ -389,20 +400,20 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->setError("Malformed definition to compute : ".print_r($definition, true));
+			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Replace field in form code
-	 * 
+	 *
 	 * @param string $source, the xhtml source to check
 	 * @param CMS_forms_field $field, the field to replace
 	 * @access public
 	 * @return string, the xhtml source checked
 	 */
-	function replaceField($source, $field) {
+	public function replaceField($source, $field) {
 		//and add already selected values (from $_POST global values)
 		$replace = array(
 			'&' => '&amp;'
@@ -420,7 +431,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	}
 	/**
 	 * Recursive method to replace input tags in XHTML source
-	 * 
+	 *
 	 * @param multidimentionnal array &definition : the XML definition to treat (by reference)
 	 * @param CMS_forms_field $field, the field to replace
 	 * @access private
@@ -469,20 +480,20 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->setError("Malformed definition to compute : ".print_r($definition, true));
+			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Add a field in form code
-	 * 
+	 *
 	 * @param string $source, the xhtml source to check
 	 * @param CMS_forms_field $field, the field to replace
 	 * @access public
 	 * @return string, the xhtml source checked
 	 */
-	function addField($source, $field) {
+	public function addField($source, $field) {
 		//and add already selected values (from $_POST global values)
 		$replace = array(
 			'&' => '&amp;'
@@ -500,7 +511,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	}
 	/**
 	 * Recursive method to add input tags in XHTML source
-	 * 
+	 *
 	 * @param multidimentionnal array &definition : the XML definition to treat (by reference)
 	 * @param CMS_forms_field $field, the field to replace
 	 * @access private
@@ -548,23 +559,23 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->setError("Malformed definition to compute : ".print_r($definition, true));
+			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Totally destroys references to this formular and all its records
 	 * @return boolean true on success, false on failure
 	 * @access public
 	 */
-	function destroy() {
-		
+	public function destroy() {
+
 		if (!$this->getID()) {
 			return false;
 		}
-		
+
 		$err = false;
 		// Destroy sendings
 		$sql = "
@@ -583,7 +594,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		if ($q->hasError()) {
 			$err += 1;
 		}
-		
+
 		// Destroy records
 		$sql = "
 			delete
@@ -612,7 +623,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		if ($q->hasError()) {
 			$err += 4;
 		}
-		
+
 		// Destroy category relations
 		$sql = "
 			delete
@@ -625,7 +636,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		if ($q->hasError()) {
 			$err += 8;
 		}
-		
+
 		// Destroy form itself
 		$sql = "
 			delete
@@ -639,20 +650,20 @@ class CMS_forms_formular extends CMS_grandFather {
 			$err += 16;
 		}
 		if ($err) {
-			$this->setError("Failed to delete form. ID : ".$this->getID().". Error code : ".$err);
+			$this->raiseError("Failed to delete form. ID : ".$this->getID().". Error code : ".$err);
 			return false;
 		}
 		unset($this);
 		return (!$err) ? true : false;
 	}
-	
+
 	/**
 	  * Writes the news into persistence (MySQL for now), along with base data.
 	  *
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		//save data
 		$closed = ($this->_public === true) ? 0 : 1 ;
@@ -662,7 +673,8 @@ class CMS_forms_formular extends CMS_grandFather {
 			name_frm='".SensitiveIO::sanitizeSQLString($this->_name)."',
 			source_frm='".SensitiveIO::sanitizeSQLString($this->_source)."',
 			responses_frm='".SensitiveIO::sanitizeSQLString($this->_responses)."',
-			closed_frm='".$closed ."'";
+			closed_frm='".$closed ."',
+			protected_frm='" . $this->_protected . "'";
 		if ($this->_formID) {
 			$sql = "
 				update
@@ -681,7 +693,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->setError("Failed to write");
+			$this->raiseError("Failed to write");
 			return false;
 		} elseif (!$this->_formID) {
 			$this->_formID = $q->getLastInsertedID();
@@ -694,20 +706,20 @@ class CMS_forms_formular extends CMS_grandFather {
 			$alreadyFoldAction->setInteger("type",CMS_forms_action::ACTION_ALREADY_FOLD);
 			$alreadyFoldAction->setString("value",'text');
 			$alreadyFoldAction->writeToPersistence();
-			
+
 			//Save form results in DB
 			$dbAction = new CMS_forms_action();
 			$dbAction->setInteger("form",$this->_formID);
 			$dbAction->setInteger("type",CMS_forms_action::ACTION_DB);
 			$dbAction->writeToPersistence();
-			
+
 			//form OK
 			$okAction = new CMS_forms_action();
 			$okAction->setInteger("form",$this->_formID);
 			$okAction->setInteger("type",CMS_forms_action::ACTION_FORMOK);
 			$okAction->setString("value",'text');
 			$okAction->writeToPersistence();
-			
+
 			//form NOK
 			$nokAction = new CMS_forms_action();
 			$nokAction->setInteger("form",$this->_formID);
@@ -717,47 +729,47 @@ class CMS_forms_formular extends CMS_grandFather {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * This form has actions attached to it ?
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 */
-	function hasActions() {
+	public function hasActions() {
 		$tmp = new CMS_forms_action();
 		return (sizeof($tmp->getAll($this->getID()))) ? true : false;
 	}
-	
+
 	/**
 	 * Get all form actions
-	 * 
+	 *
 	 * @access public
 	 * @return array of CMS_forms_action
 	 */
-	function getActions() {
+	public function getActions() {
 		$tmp = new CMS_forms_action();
 		return $tmp->getAll($this->getID(), true);
 	}
-	
+
 	/**
 	 * Get all actions of a given type
-	 * 
+	 *
 	 * @access public
 	 * @return array of CMS_forms_action
 	 */
-	function getActionsByType($actionType) {
+	public function getActionsByType($actionType) {
 		$tmp = new CMS_forms_action();
 		return $tmp->getAll($this->getID(), true, $actionType);
 	}
-	
+
 	/**
 	 * Is form already folded by sender
-	 * 
+	 *
 	 * @access public
 	 * @return array of CMS_forms_action
 	 */
-	function isAlreadyFolded($sender) {
+	public function isAlreadyFolded($sender) {
 		if (!is_a($sender, 'CMS_forms_sender')) {
 			$sender = CMS_forms_sender::getSenderForContext();
 		}
@@ -776,36 +788,36 @@ class CMS_forms_formular extends CMS_grandFather {
 				where
 					form_fld = '".$this->getID()."'
 					and id_fld = field_rec
-					and sending_rec = id_snd 
+					and sending_rec = id_snd
 					and sessionID_snd = '".sensitiveIO::sanitizeSQLString($sender->getAttribute('sessionID'))."'
 			";
 			$q = new CMS_query($sql);
 			return ($q->getNumRows() >= $this->getAttribute('responses'));
 		}
 	}
-	
+
 	/**
 	 * Get all form fields
-	 * 
+	 *
 	 * @param boolean $outputobjects : return array of CMS_forms_field instead of array of ids (default : false)
 	 * @param boolean $withDesactivedFields : add desactived fields to returned list (default : false)
 	 * @access public
 	 * @return array of CMS_forms_field
 	 */
-	function getFields($outputobjects = false, $withDesactivedFields = false) {
+	public function getFields($outputobjects = false, $withDesactivedFields = false) {
 		return CMS_forms_field::getAll($this->getID(), $outputobjects, $withDesactivedFields);
 	}
-	
+
 	/**
 	 * Get form field by it's name
-	 * 
+	 *
 	 * @param string $fieldName : the form field name to get
 	 * @param boolean $outputobjects : return array of CMS_forms_field instead of array of ids (default : false)
 	 * @param boolean $withDesactivedFields : add desactived fields to returned list (default : false)
 	 * @access public
 	 * @return array of CMS_forms_field
 	 */
-	function getFieldByName($fieldName, $outputobjects = false, $withDesactivedFields = false) {
+	public function getFieldByName($fieldName, $outputobjects = false, $withDesactivedFields = false) {
 		$sql = "
 			select
 				id_fld as id
@@ -827,30 +839,30 @@ class CMS_forms_formular extends CMS_grandFather {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get form field by it's id
-	 * 
+	 *
 	 * @param string $fieldId : the form field id to get
 	 * @return CMS_forms_field or false if none found
 	 * @access public
 	 */
-	function getFieldById($fieldId) {
+	public function getFieldById($fieldId) {
 		$field = new CMS_forms_field($fieldId, $this->getID());
 		if (!$field->hasError()) {
 			return $field;
 		}
-		$this->setError('Can\'t find field ID '.$fieldId.' for current form ...');
+		$this->raiseError('Can\'t find field ID '.$fieldId.' for current form ...');
 		return false;
 	}
-	
+
 	/**
 	 * This form has records attached to it ?
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 */
-	function hasRecords() {
+	public function hasRecords() {
 		$sql = "
 			select
 				1
@@ -864,15 +876,15 @@ class CMS_forms_formular extends CMS_grandFather {
 		$q = new CMS_query($sql);
 		return ($q->getNumRows()) ? true : false;
 	}
-	
+
 	/**
 	 * Get all form records datas
-	 * 
+	 *
 	 * @param boolean $withDesactivedFields : add desactived fields to returned result (default : false)
 	 * @access public
 	 * @return multidimentionnal array
 	 */
-	function getAllRecordDatas($withDesactivedFields = false, $withDate = false) {
+	public function getAllRecordDatas($withDesactivedFields = false, $withDate = false) {
 		$sql = "
 			select
 				field_rec,
@@ -915,19 +927,19 @@ class CMS_forms_formular extends CMS_grandFather {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Delete all form records
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 */
-	function resetRecords() {
+	public function resetRecords() {
 		//sender table
 		$sql = "
-			delete 
+			delete
 				mod_cms_forms_senders.*
-			from 
+			from
 				mod_cms_forms_fields,
 				mod_cms_forms_records,
 				mod_cms_forms_senders
@@ -939,50 +951,50 @@ class CMS_forms_formular extends CMS_grandFather {
 		$q = new CMS_query($sql);
 		//records table
 		$sql = "
-			delete 
+			delete
 				mod_cms_forms_records.*
-			from 
+			from
 				mod_cms_forms_fields,
 				mod_cms_forms_records
 			where
 				form_fld = '".$this->getID()."'
 				and id_fld = field_rec
 		";
-		
+
 		$q = new CMS_query($sql);
 		return true;
 	}
-	
+
 	/**
 	 * Delete all empty forms created
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 * @static
 	 */
-	static function cleanEmptyForms() {
+	public static function cleanEmptyForms() {
 		$sql = "
-			delete 
-			from 
+			delete
+			from
 				mod_cms_forms_formulars
 			where
-				responses_frm = '0' 
+				responses_frm = '0'
 				and (
-					name_frm = '' 
+					name_frm = ''
 					or source_frm = ''
 					)
 		";
 		$q = new CMS_query($sql);
 		return true;
 	}
-	
+
 	/**
 	 * Analyse a form xhtml code check if it has some copy-pasted code inside
 	 *
 	 * @access public
 	 * @return true if none error found
 	 */
-	function checkFormCode($formCode)  {
+	public function checkFormCode($formCode)  {
 		//get form ID in xhtml code
 		$status = preg_match('#<form[^>]* id="cms_forms_(\d*)"#iU',$formCode,$formId);
 		$formId = array_map("trim",$formId);
@@ -994,6 +1006,37 @@ class CMS_forms_formular extends CMS_grandFather {
 			return false;
 		}
 		return true;
+	}
+
+	private function addCaptchaToSource($source){
+        $sourceStart = strstr($source, 'type="submit"', true);
+        $pos = strrpos($sourceStart, '<tr');
+        $html = '<tr><td><td><div class="container-recaptcha"><div class="g-recaptcha" data-sitekey="' . $this->getReCaptchaSiteKey() . '"></div></div></td></tr>';
+        return substr_replace($source, $html, $pos, 0);
+	}
+
+	private function getReCaptchaSiteKey(){
+		$module = new CMS_module_cms_forms('cms_forms');
+		return $module->getParameters('RECAPTCHA_KEY');
+	}
+
+	private function getReCaptchaSecret(){
+		$module = new CMS_module_cms_forms('cms_forms');
+		return $module->getParameters('RECAPTCHA_SECRET');
+	}
+
+	public function captchaIsValid(){
+		if(io::post('g-recaptcha-response')){
+			require_once dirname(__FILE__) . '/ReCaptcha/recaptchalib.php';
+			$reCaptcha = new ReCaptcha($this->getReCaptchaSecret());
+			$response = $reCaptcha->verifyResponse(
+				$_SERVER["REMOTE_ADDR"], io::post('g-recaptcha-response')
+			);
+			if($response->success){
+				return true;
+			}
+		}
+		return false;
 	}
 }
 ?>

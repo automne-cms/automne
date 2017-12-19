@@ -255,7 +255,7 @@
 	  * @return string echapped query
 	  * @access public
 	  */
-	static function echap($input) {
+	public static function echap($input) {
 		try {
 			$db = (is_array(self::$_connection)) ? current(self::$_connection) : new PDO(APPLICATION_DB_DSN, APPLICATION_DB_USER, APPLICATION_DB_PASSWORD, array(PDO::ATTR_PERSISTENT => APPLICATION_DB_PERSISTENT_CONNNECTION, PDO::ERRMODE_EXCEPTION => true, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
 		} catch (PDOException $e) {

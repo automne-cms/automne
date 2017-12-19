@@ -44,7 +44,7 @@ class CMS_subobject_string extends CMS_subobject_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $objectIDs = array(), $dbValues = array(), $public = false)
+	public function __construct($id = 0, $objectIDs = array(), $dbValues = array(), $public = false)
 	{
 		parent::__construct($id, $objectIDs, $dbValues, $public);
 		
@@ -63,7 +63,7 @@ class CMS_subobject_string extends CMS_subobject_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($value)
+	public function setValue($value)
 	{
 		//add some complementary checks on values
 		if ($value && io::strlen($value) > 255) {

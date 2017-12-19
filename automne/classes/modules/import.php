@@ -60,7 +60,7 @@ class CMS_module_import extends CMS_grandFather
 	 * 
 	 * @return void
 	 */
-	function __construct() {
+	public function __construct() {
 		
 		$this->_defaultParameters = array('create', 'update', 'files');
 		$this->_availableParameters = array(
@@ -81,7 +81,7 @@ class CMS_module_import extends CMS_grandFather
 	 * @param mixed $value, the parameter value to set
 	 * @return void
 	 */
-	function setParameter($parameter, $value) {
+	public function setParameter($parameter, $value) {
 		$this->_parameters[$parameter] = $value;
 	}
 	
@@ -91,7 +91,7 @@ class CMS_module_import extends CMS_grandFather
 	 * @param string $parameter, the parameter name to get
 	 * @return mixed : the current parameter value
 	 */
-	function getParameter($parameter) {
+	public function getParameter($parameter) {
 		if (isset($this->_parameters[$parameter])) {
 			return $this->_parameters[$parameter];
 		}
@@ -104,7 +104,7 @@ class CMS_module_import extends CMS_grandFather
 	 * @param array $parameters, the parameters to set
 	 * @return void
 	 */
-	function setParameters($parameters) {
+	public function setParameters($parameters) {
 		$this->_parameters = $parameters;
 	}
 	
@@ -113,7 +113,7 @@ class CMS_module_import extends CMS_grandFather
 	 * 
 	 * @return array : the current parameters values
 	 */
-	function getParameters() {
+	public function getParameters() {
 		return $this->_parameters;
 	}
 	
@@ -122,7 +122,7 @@ class CMS_module_import extends CMS_grandFather
 	 * 
 	 * @return array : the default parameters names
 	 */
-	function getDefaultParameters() {
+	public function getDefaultParameters() {
 		return $this->_defaultParameters;
 	}
 	
@@ -132,7 +132,7 @@ class CMS_module_import extends CMS_grandFather
 	 * @param CMS_language $cms_language, the label language
 	 * @return array : the parameters names and labels
 	 */
-	function getAvailableParameters($cms_language) {
+	public function getAvailableParameters($cms_language) {
 		$return = array();
 		foreach ($this->_availableParameters as $key => $label) {
 			$return[$key] = $cms_language->getMessage($label);
@@ -149,7 +149,7 @@ class CMS_module_import extends CMS_grandFather
 	 * @param string $infos (reference), the returned import infos
 	 * @return boolean : the import status
 	 */
-	function import($datas, $format = 'php', &$cms_language, &$infos) {
+	public function import($datas, $format = 'php', &$cms_language, &$infos) {
 		$infos = '';
 		$return = true;
 		switch ($format) {
