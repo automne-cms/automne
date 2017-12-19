@@ -43,7 +43,7 @@ class CMS_gzip_file extends CMS_tar_file
 			$this->setError("Not a valid name given to archive ".$name);
 			return;
 		}
-		$this->CMS_tar_file($name);
+		parent::__construct($name);
 		$this->options['type'] = "gzip";
 	}
 
