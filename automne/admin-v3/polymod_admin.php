@@ -163,10 +163,17 @@ if (!sizeof($objects)) {
 			$objectUseageLabel = $cms_language->getMessage(MESSAGE_PAGE_FIELD_NO).'<br />';
 		} else {
 			$objectUseageLabel = $cms_language->getMessage(MESSAGE_PAGE_FIELD_OBJECT_USED).' : <ul>';
+			$atLeastOneOk = false;
 			foreach ($objectUseage as $anObjectWhichUse) {
-				$objectUseageLabel .= '<li>'.$anObjectWhichUse->getLabel().'</li>';
+				if($anObjectWhichUse && is_object($anObjectWhichUse)){
+					$atLeastOneOk = true;
+					$objectUseageLabel .= '<li>'.$anObjectWhichUse->getLabel().'</li>';
+				}
 			}
 			$objectUseageLabel .='</ul>';
+			if(!$atLeastOneOk){
+				$objectUseageLabel = $cms_language->getMessage(MESSAGE_PAGE_FIELD_NO).'<br />';
+			}
 		}
 		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID(), true);
 

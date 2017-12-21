@@ -542,10 +542,17 @@ class CMS_moduleCategory extends CMS_grandFather {
 			//search and convert plugins codes
 			$description = CMS_textEditor::parseOuterContent($description, $this->_moduleCodename);
 			//then eval all plugin codes
-			$callbackFunc = create_function('$string', 'ob_start();eval(sensitiveIO::sanitizeExecCommand("$string[2];"));$ret = ob_get_contents();ob_end_clean();return $ret;');
-			if ($callbackFunc) {
-				$description = preg_replace_callback("/(<\?php|<\?)(.*?)\?>/si", $callbackFunc, $description);
-			}
+			$description = preg_replace_callback(
+				"/(<\?php|<\?)(.*?)\?>/si", 
+				function($string){
+					ob_start();
+					eval(sensitiveIO::sanitizeExecCommand("$string[2];"));
+					$ret = ob_get_contents();
+					ob_end_clean();
+					return $ret;
+				},
+				$description
+			);
 		}
 		return $description;
 	}
