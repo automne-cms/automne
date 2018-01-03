@@ -376,8 +376,8 @@ class CMS_cache extends CMS_grandFather {
 			//Backend cache options
 			$backendOptions = array(
 				'cache_dir'					=> PATH_CACHE_FS.'/'.$type,		// Directory where the cache files are stored
-				'cache_file_umask'			=> octdec(FILES_CHMOD),
-				'hashed_directory_umask'	=> octdec(DIRS_CHMOD),
+				'cache_file_perm'			=> octdec(FILES_CHMOD),
+				'hashed_directory_perm'		=> octdec(DIRS_CHMOD),
 				'hashed_directory_level'	=> 1,
 			);
 			// getting a Zend_Cache_Core object

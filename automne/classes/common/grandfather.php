@@ -321,6 +321,10 @@ class CMS_grandFather
 		return false;
 	}
 
+	public function destroy(){
+		return true;
+	}
+
 	/**
 	  * Automne autoload handler
 	  *
