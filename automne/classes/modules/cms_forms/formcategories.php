@@ -99,7 +99,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 			$this->raiseError("Not a valid CMS_forms_formular given");
 			return $this->_categories;
 		}
-		if (sizeof($this->_categories) <= 0
+		if ( (!isset($this->_categories) || sizeof($this->_categories) <= 0) 
 				&& $this->_form->getID() > 0) {
 			$this->_categories = array();
 			

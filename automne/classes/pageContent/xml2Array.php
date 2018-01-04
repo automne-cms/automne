@@ -76,7 +76,7 @@ class CMS_xml2Array extends CMS_grandFather
 							xml_error_string(xml_get_error_code($parser)),
 							xml_get_current_line_number($parser));
 					if ($this->_params & ~self::XML_DONT_THROW_ERROR) {
-						$this-->setError($this->_parsingError." :\n".$xml, true);
+						$this->setError($this->_parsingError." :\n".$xml, true);
 					}
 				}
 				xml_parser_free($parser);
@@ -280,7 +280,7 @@ class CMS_xml2Array extends CMS_grandFather
 				if (!$part || $part == self::ARRAY2XML_START_TAG) {
 					$tagOpening = '<' . $definition[$c]["nodename"];
 					if(is_array($definition[$c]["attributes"])) {
-						while (list($key, $value) = each($definition[$c]["attributes"])){
+						foreach($definition[$c]["attributes"] as $key => $value){
 							$tagOpening .=' ' . $key.'="' . $value . '"';
 						}
 					}

@@ -576,13 +576,15 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 			}
 		}
 		//sort tables by template labels
-		$sortfunc = create_function('$a,$b', 'return strnatcasecmp($a->getLabel(), $b->getLabel());');
-		if ($sortfunc) {
-			if ($matchTpl) usort($matchTpl, $sortfunc);
-			if ($notMatchTpl) usort($notMatchTpl, $sortfunc);
-		}
+		if ($matchTpl) usort($matchTpl, array('CMS_pageTemplatesCatalog','sortByTemplateLabels'));
+		if ($notMatchTpl) usort($notMatchTpl, array('CMS_pageTemplatesCatalog','sortByTemplateLabels'));
 		//then return array of templates
 		return array('match' => $matchTpl, 'nomatch' => $notMatchTpl);
 	}
+	
+	public static function sortByTemplateLabels($a,$b){
+		return strnatcasecmp($a->getLabel(), $b->getLabel());
+	}
+
 }
 ?>

@@ -242,9 +242,13 @@ class CMS_module extends CMS_grandFather
 	public function getDefaultLanguageCodename()
 	{
 		if ($this->hasParameters() && $s = $this->getParameters(io::strtolower("default_language"))) {
-			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", io::strtolower($s));
+			if(!defined("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE")){
+				define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", io::strtolower($s));
+			}
 		} else {
-			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", APPLICATION_DEFAULT_LANGUAGE);
+			if(!defined("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE")){
+				define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", APPLICATION_DEFAULT_LANGUAGE);
+			}
 		}
 		return constant("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
 	}

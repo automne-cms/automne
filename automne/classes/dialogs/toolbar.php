@@ -408,7 +408,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 		}
-		$this->__destroy();
+		parent::destroy();
 	}
 	
 	/**

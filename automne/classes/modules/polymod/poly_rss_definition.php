@@ -345,7 +345,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			//unset polymod structure in cache
 			CMS_cache::clearTypeCache('atm-polymod-structure');
 		}
-		$this->__destroy();
+		parent::destroy();
 		return true;
 	}
 

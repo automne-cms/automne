@@ -917,9 +917,9 @@ class CMS_dialog extends CMS_JSDialog
 	  *
 	  * @param string message
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
-	protected function setActionMessage($message)
+	public function setActionMessage($message)
 	{
 		$this->_actionMessage = $message;
 	}
@@ -929,9 +929,9 @@ class CMS_dialog extends CMS_JSDialog
 	  *
 	  * @param string message
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
-	protected function getActionMessage()
+	public function getActionMessage()
 	{
 		return $this->_actionMessage;
 	}

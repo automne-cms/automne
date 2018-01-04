@@ -287,7 +287,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			
 			$headers = 
 			'$content = "";'."\n".
-			'$replace = "";'."\n".
+			'$replace = array();'."\n".
 			'$atmIfResults = array();'."\n".
 			'if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();'."\n".
 			$blockAttributes.

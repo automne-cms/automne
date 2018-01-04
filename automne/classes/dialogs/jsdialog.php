@@ -202,9 +202,9 @@ class CMS_JSDialog extends CMS_grandFather
 	  * reload tree frame
 	  *
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
-	protected function reloadTree()
+	public function reloadTree()
 	{
 		$reloadTree = '
 			<!-- reloadTree reload the tree Frame -->
@@ -224,9 +224,9 @@ class CMS_JSDialog extends CMS_grandFather
 	  * usually to remove a frame (ie modules or tree frame)
 	  *
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
-	protected function reloadAll()
+	public function reloadAll()
 	{
 		$reloadAll = '
 			<!-- reloadAll reload all Frames -->
@@ -243,9 +243,9 @@ class CMS_JSDialog extends CMS_grandFather
 	  * reload modules frame
 	  *
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
-	protected function reloadModules()
+	public function reloadModules()
 	{
 		$reloadModules = '
 			<!-- reloadModules reload the modules Frame -->

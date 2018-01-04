@@ -155,14 +155,14 @@ class CMS_textEditor extends CMS_grandFather
 		$oFCKeditor->Config['DefaultLanguage'] = $this->_language->getCode();
 		$oFCKeditor->Value = $value;
 		if (is_array($this->_editorAttributes)) {
-			while (list($k, $v) = @each($this->_editorAttributes)) {
+			foreach($this->_editorAttributes as $k => $v){
 				if ($v != '') {
 					$oFCKeditor->{$k} = $v ;
 				}
 			}
 		}
 		if (is_array($this->_editorConfigAttributes)) {
-			while (list($k, $v) = @each($this->_editorConfigAttributes)) {
+			foreach($this->_editorConfigAttributes as $k => $v){
 				if ($v != '') {
 					$oFCKeditor->Config[$k] = $v;
 				}
@@ -226,8 +226,8 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string the text with plugins tags adapted for fckeditor
 	  * @access public
 	  */
-	public static function parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
-		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION);
+	public function parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
+		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION,$this);
 		$wantedTags = $modulesTreatment->getWantedTags();
 		//create regular expression on wanted tags
 		$exp = '';

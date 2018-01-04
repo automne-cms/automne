@@ -503,7 +503,7 @@ class CMS_resource extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 		}
-		$this->__destroy();
+		parent::destroy();
 	}
 	
 	/**

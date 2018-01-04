@@ -1133,7 +1133,7 @@ $configContent .= '
 				}
 			}
 			//go to next step
-			if (APPLICATION_IS_WINDOWS) {
+			if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 				//skip chmod step on windows platform
 				$step = 6;
 			}  else {
@@ -1262,7 +1262,7 @@ $configContent .= '
 			if (!(function_exists('exec') || !function_exists('passthru')) && !function_exists('system')) {
 				$clidetection = $step6_CLIDetection_nosystem;
 				$cliAvailable = false;
-			} elseif (APPLICATION_IS_WINDOWS) {
+			if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 				$clidetection = $step6_CLIDetection_windows;
 				$cliAvailable = true;
 				$windows = true;
@@ -1332,7 +1332,7 @@ $configContent .= '
 			} else {
 				$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : "php";
 				//test for CLI proveded
-				if (APPLICATION_IS_WINDOWS) {
+				if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 					$return = CMS_patch::executeCommand('"'.$cliPath.'" -v',$error);
 				} else {
 					$return = CMS_patch::executeCommand(escapeshellcmd($cliPath).' -v',$error);
@@ -1345,7 +1345,7 @@ $configContent .= '
 					if (version_compare($cliversion, $MINIMAL_PHP_VERSION) === -1) {
 						$error .= $step6_CLIDetection_version_not_match.' ('.$cliversion.')<br />';
 					} else {
-						if (APPLICATION_IS_WINDOWS) {
+						if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 							//add CLI path to config.php file
 							$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 							$configFileContent = $configFile->readContent("array","rtrim");
@@ -1430,7 +1430,7 @@ $configContent .= '
 			$needCliPath = false;
 			$cliPath = "";
 			if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1) {
-				if (APPLICATION_IS_WINDOWS) {
+				if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 					$needCliPath = true;
 					$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
 				} elseif(substr(CMS_patch::executeCommand('which php 2>&1',$error),0,1) !== '/') {
@@ -1728,7 +1728,7 @@ $configContent .= '
 	
 	if ($step == 9) {
 		$title = '<h1>'.$step9_title.'</h1>';
-		if (APPLICATION_IS_WINDOWS) {
+		if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 			$uname = 'www-data';
 		} else {
 			if (function_exists('posix_getpwuid') && function_exists('posix_getuid')) {
@@ -2818,4 +2818,8 @@ class CMS_gzip_file_install extends CMS_tar_file_install
 		return @gzopen($this->options['name'], "rb");
 	}
 }
+
+
 ?>
+
+

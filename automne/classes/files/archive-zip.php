@@ -43,7 +43,7 @@ class CMS_zip_file extends CMS_archive
 			$this->setError("Not a valid name given to archive ".$name);
 			return;
 		}
-		$this->CMS_archive($name);
+		parent::__construct($name);
 		$this->options['type'] = "zip";
 	}
 

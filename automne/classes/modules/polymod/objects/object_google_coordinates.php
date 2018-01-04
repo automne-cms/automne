@@ -401,7 +401,7 @@ class CMS_object_google_coordinates extends CMS_object_common
       * @return array : the labels of object structure and functions
       * @access public
       */
-    public function getLabelsStructure(&$language) {
+    public function getLabelsStructure(&$language,$objectName='') {
 		$labels = parent::getLabelsStructure($language);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);

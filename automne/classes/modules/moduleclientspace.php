@@ -124,7 +124,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 		// Foreach attribute, adds a line to $data, after first php tag
 		if (is_array($this->_attributes) && $this->_attributes) {
 			$attrs = '';
-			while (list($k,$v) = each($this->_attributes)) {
+			foreach($this->_attributes as $k => $v){
 				//Foreach attribute, Adding a line to $data, after first php tag
 				$attrs .= 
 				'$mod_'.$codename.'["'.$k.'"] = '.var_export($v,true).';'."\n";

@@ -625,7 +625,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		}
 		
 		$this->applyToUsers();
-		$this->__destroy();
+		parent::destroy();
 		
 		//Clear polymod cache
 		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));

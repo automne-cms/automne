@@ -638,7 +638,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 		$q = new CMS_query($sql);
 		
 		//4- unset object
-		$this->__destroy();
+		parent::destroy();
 		return true;
 	}
 	

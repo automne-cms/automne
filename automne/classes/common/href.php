@@ -450,7 +450,7 @@ class CMS_href extends CMS_grandFather
 		$s = '';
 		if (is_array($this->_attributes) && $this->_attributes) {
 			reset($this->_attributes);
-			while (list($k, $v) = each($this->_attributes)) {
+			foreach($this->_attributes as $k=>$v){
 				$s .= ' '.$k.'="'.$v.'"';
 			}
 		}

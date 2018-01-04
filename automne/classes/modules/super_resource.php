@@ -1496,7 +1496,7 @@ class CMS_superResource extends CMS_resource
 				//change the article proposed location
 				if ($this->setProposedLocation(RESOURCE_LOCATION_DELETED, $cms_user)) {
 					$this->writeToPersistence();
-					$this->__destroy();
+					parent::destroy();
 					return true;
 				} else {
 					$this->setError("Resource deletion error");
@@ -1515,7 +1515,7 @@ class CMS_superResource extends CMS_resource
 					".$this->_idName.$this->_tableSufix."='".$this->_ID."'
 				";
 			$q = new CMS_query($sql);
-			$this->__destroy();
+			parent::destroy();
 			return true;
 		}
 	}

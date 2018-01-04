@@ -66,7 +66,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 			<option value="0"></option>';
 		if (is_array($args['items_possible'])) {
 			@reset($args['items_possible']);
-			while (list($id, $lbl) = each($args['items_possible'])) {
+			foreach($args['items_possible'] as $id => $lbl){
 				$sel = ($id == $args["default_value"]) ? ' selected="selected"' : '' ;
 				$s .= '
 				<option value="'.$id.'"'.$sel.'>'.$lbl.'</option>';
@@ -160,7 +160,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		var a_itemsFromPositions'.$s_hiddenField.' = new Array();';
 		$count = 0;
 		@reset($a_all_categoriesIDs);
-		while (list($option_value, $label) = each($a_all_categoriesIDs)) {
+		foreach($a_all_categoriesIDs as $option_value => $label){
 			$s .= '
 		a_itemsFromPositions'.$s_hiddenField.'[\''.$option_value.'\'] = '.$count.';';
 			$count++;
@@ -332,7 +332,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 					<select'.$fromID.' ondblclick="copyFromListBoxToAnother_'.$s_hiddenField.'(\''.$s_listboxFrom.'\', \''.$s_listboxTo.'\');" name="'.$s_listboxFrom.'" size="7" multiple="multiple"'.$s_inputClassname.' style="width:'.$s_width.';height:'.$s_height.';">';
 			@reset($a_all_categoriesIDs);
 			if (is_array($a_all_categoriesIDs) && $a_all_categoriesIDs) {
-				while (list($id, $lbl) = each($a_all_categoriesIDs)) {
+				foreach($a_all_categoriesIDs as $id => $lbl){
 					$description = (isset($args['description'][$id])) ? ' title="'.io::htmlspecialchars($args['description'][$id]).'"' : '';
 					if (isset($args['disableIDs']) && is_array($args['disableIDs']) && in_array($id,$args['disableIDs'])){
 						$s .= '
@@ -379,7 +379,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 					<select'.$fromID.' ondblclick="copyFromListBoxToAnother_'.$s_hiddenField.'(\''.$s_listboxFrom.'\', \''.$s_listboxTo.'\');" name="'.$s_listboxFrom.'" multiple="multiple"'.$s_inputClassname.' style="width:'.$s_width.';height:'.$s_height.';">';
 			@reset($a_all_categoriesIDs);
 			if (is_array($a_all_categoriesIDs) && $a_all_categoriesIDs) {
-				while (list($id, $lbl) = each($a_all_categoriesIDs)) {
+				foreach($a_all_categoriesIDs as $id => $lbl){
 					$description = (isset($args['description'][$id])) ? ' title="'.io::htmlspecialchars($args['description'][$id]).'"' : '';
 					if (is_array($args['disableIDs']) && in_array($id,$args['disableIDs'])){
 						$s .= '

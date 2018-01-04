@@ -646,7 +646,7 @@ class CMS_website extends CMS_grandFather
 			//regenerates all the pages
 			CMS_tree::regenerateAllPages(true);
 		}
-		$this->__desctruct();
+		parent::destroy();
 	}
 	
 	/**
