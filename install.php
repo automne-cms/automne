@@ -1262,6 +1262,7 @@ $configContent .= '
 			if (!(function_exists('exec') || !function_exists('passthru')) && !function_exists('system')) {
 				$clidetection = $step6_CLIDetection_nosystem;
 				$cliAvailable = false;
+			}
 			if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 				$clidetection = $step6_CLIDetection_windows;
 				$cliAvailable = true;
