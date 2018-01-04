@@ -467,10 +467,7 @@ class SensitiveIO extends CMS_grandFather
 		}
 		//encode nodes array in utf-8 if needed
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-			$func = create_function('&$data,$key', '$data = is_string($data) ? io::utf8Encode($data) : $data;');
-			if ($func) {
-				array_walk_recursive($datas, $func);
-			}
+			array_walk_recursive($datas,array('SensitiveIO','utf8EncodeIfString'));
 		}
 		return json_encode($datas);
 	}
