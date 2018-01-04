@@ -1642,7 +1642,7 @@ class CMS_object_search extends CMS_grandFather
 			return false;
 		}
 		if ($return == self::POLYMOD_SEARCH_RETURN_IDS) {
-			$currentResult = each($this->_sortedResultsIds);
+			$currentResult = array_shift($this->_sortedResultsIds);
 			if ($currentResult !== false) {
 				$this->_objectsCount++;
 				return $currentResult['value'];
@@ -1661,7 +1661,7 @@ class CMS_object_search extends CMS_grandFather
 			//load sub objects values
 			$loadSubObjectsValues = ($return != self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT);
 			//create object
-			$currentResult = each($this->_sortedResultsIds);
+			$currentResult = array_shift($this->_sortedResultsIds);
 			if ($currentResult !== false) {
 				//2- add object values to objects values
 				if (!isset($this->_objectsValues[$currentResult['value']])) {
