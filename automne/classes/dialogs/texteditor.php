@@ -287,7 +287,8 @@ class CMS_textEditor extends CMS_grandFather
 			$text = str_replace(array_keys($replace),$replace,$text);
 			$text = sensitiveIO::decodeWindowsChars($text);
 			
-			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, new CMS_date());
+			$date = new CMS_date();
+			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $date);
 			$wantedTags = $modulesTreatment->getWantedTags();
 			
 			//create regular expression on wanted tags

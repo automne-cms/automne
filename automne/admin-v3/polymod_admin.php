@@ -237,7 +237,7 @@ if (is_object($object)) {
 	$content .= '<dialog-title type="admin_h2">'.$cms_language->getMessage(MESSAGE_PAGE_OBJECT).' :: '.$object->getLabel($cms_language).' :</dialog-title>
 	<br />
 	<dialog-title type="admin_h3">'.$cms_language->getMessage(MESSAGE_PAGE_FIELDS).' :</dialog-title>';
-	if (!sizeof($fields)) {
+	if ($fields || !sizeof($fields)) {
 		$content .= $cms_language->getMessage(MESSAGE_PAGE_EMPTY_SET)."<br /><br />";
 		$content .= '
 		<form action="polymod_field.php" method="post">
