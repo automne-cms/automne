@@ -1096,6 +1096,14 @@ if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
 	define("AUTOMNE_LASTUPDATE", 0);
 }
 
+if(!defined("IS_TEST_ENVIRONMENT")){
+  define("IS_TEST_ENVIRONMENT", false);
+}
+
+if(!defined("TEST_MAIL_TO")){
+  define("TEST_MAIL_TO", null); 
+}
+
 //include base packages
 require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 //log PHP Errors
