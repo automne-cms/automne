@@ -106,7 +106,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	  * @return string the data from the rows.
 	  * @access public
 	  */
-	public function getClientspaceData($codename, &$language, &$page, $visualizationMode)
+	public function getClientspaceData($codename, $language, &$page, $visualizationMode)
 	{
 		// Prints wanted template
 		$tpl_name = "mod_".$codename."_".io::strtolower($this->_attributes["type"]).".php";

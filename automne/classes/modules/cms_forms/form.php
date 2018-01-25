@@ -395,7 +395,7 @@ class CMS_forms_formular extends CMS_grandFather {
 						$definition[$key]['attributes']['type'] = 'text';
 					}
 				}
-				if (is_array($definition[$key]) && sizeof($definition[$key]['childrens'])) {
+				if (is_array($definition[$key]) && is_array($definition[$key]['childrens']) &&  sizeof($definition[$key]['childrens'])) {
 					$this->_checkInputs($definition[$key]['childrens']);
 				}
 			}

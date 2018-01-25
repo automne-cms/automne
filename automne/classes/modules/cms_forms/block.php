@@ -111,7 +111,7 @@ class CMS_block_cms_forms extends CMS_block
 			if (isset($data["value"]['formID']) && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
 				//call cms_forms clientspace content
 				$cs = new CMS_moduleClientspace(array("module" => MOD_CMS_FORMS_CODENAME,  "id" => "cms_forms", "type" => "formular", "formID" => $data["value"]['formID']));
-				$html = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, new CMS_date(), $page, $visualizationMode);
+				$html = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, null, $page, $visualizationMode);
 				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
 					//save in global var the page ID who need this module so we can add the header module code later.
 					$GLOBALS[MOD_CMS_FORMS_CODENAME]["pageUseModule"][$this->_pageID][] = $data["value"]['formID'];

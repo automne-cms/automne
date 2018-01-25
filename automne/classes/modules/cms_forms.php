@@ -132,7 +132,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 				if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE && isset($treatedObject) && isset($GLOBALS[MOD_CMS_FORMS_CODENAME]["pageUseModule"][$treatedObject->getID()])) {
 					//call clientspace header content
 					$cs = new CMS_moduleClientspace(array("module" => MOD_CMS_FORMS_CODENAME,  "id" => "cms_forms_header", "type" => "header", "usedforms" => $GLOBALS[MOD_CMS_FORMS_CODENAME]["pageUseModule"][$treatedObject->getID()]));
-					$modulesCode[MOD_CMS_FORMS_CODENAME] = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, new CMS_date(), $treatedObject, $visualizationMode);
+					$modulesCode[MOD_CMS_FORMS_CODENAME] = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, null, $treatedObject, $visualizationMode);
 					return $modulesCode;
 				} else {
 					return $modulesCode;
