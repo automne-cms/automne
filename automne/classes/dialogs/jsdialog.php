@@ -261,9 +261,8 @@ class CMS_JSDialog extends CMS_grandFather
 	  * reload modules frame
 	  *
 	  * @return void
-	  * @access private
 	  */
-	protected function changeColor()
+	public function changeColor()
 	{
 		$changeColor = '
 			<!-- Switch color of an item -->
