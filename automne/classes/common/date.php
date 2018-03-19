@@ -525,6 +525,7 @@ class CMS_date extends CMS_grandFather
 				break;
 		}
 	}
+
 	
 	/**
 	  * move a CMS_date to a given value

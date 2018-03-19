@@ -31,7 +31,9 @@ if (!defined('APPLICATION_USER_TYPE')) {
 //include general configuration file
 if (@file_exists(dirname(__FILE__)."/config.php")) {
 	@include_once(dirname(__FILE__)."/config.php");
-	define('APPLICATION_CONFIG_LOADED', true);
+  if(!defined('APPLICATION_CONFIG_LOADED')){
+	 define('APPLICATION_CONFIG_LOADED', true);
+  }
 } elseif(!isset($_SERVER['SCRIPT_NAME']) || pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) != 'install.php') {
 	die('Cannot find config.php file, please run Automne installation again ...');
 } else {
@@ -224,9 +226,9 @@ if (!defined("APPLICATION_EXEC_TYPE")) {
   *	Path of the REAL document root
   *	Default : $_SERVER["DOCUMENT_ROOT"]
   */
+$_SERVER["DOCUMENT_ROOT"] = __DIR__;
 if (defined('APPLICATION_EXEC_TYPE') && APPLICATION_EXEC_TYPE == 'cli') {
 	//We are in CLI mode, we must calculate the document root first
-	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
 	if (defined('PATH_REALROOT_WR')) {
 		$_SERVER["DOCUMENT_ROOT"] = realpath(substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR)));
 	}
@@ -451,7 +453,6 @@ if (!defined("PATH_MAIN_WR")) {
 if (!defined("PATH_MAIN_FS")) {
 	define("PATH_MAIN_FS", PATH_REALROOT_FS."/automne");
 }
-
 /**
   *	Block files (files uploaded that represents blocks content)
   *	Default : PATH_REALROOT_WR."/files"

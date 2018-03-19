@@ -17,25 +17,27 @@
  * End group blocks with:
  * ':group:end'
  *
- * @package phpMyAdmin
+ * @package PhpMyAdmin
  */
 
 $forms = array();
 $forms['Features']['General'] = array(
-    'AjaxEnable',
     'VersionCheck',
     'NaturalOrder',
     'InitialSlidersState',
-    'ErrorIconic',
     'LoginCookieValidity',
-    'ReplaceHelpImg',
     'Servers/1/only_db', // saves to Server/only_db
     'Servers/1/hide_db', // saves to Server/hide_db
     'SkipLockedTables',
+    'DisableMultiTableMaintenance',
     'MaxDbList',
-    'MaxTableList');
+    'MaxTableList',
+    'NumRecentTables',
+    'ShowHint');
 $forms['Features']['Text_fields'] = array(
     'CharEditing',
+    'MinSizeForInputField',
+    'MaxSizeForInputField',
     'CharTextareaCols',
     'CharTextareaRows',
     'TextareaCols',
@@ -47,10 +49,13 @@ $forms['Features']['Page_titles'] = array(
     'TitleDatabase',
     'TitleServer');
 $forms['Features']['Warnings'] = array(
+    'ServerLibraryDifference_DisableWarning',
     'PmaNoRelation_DisableWarning',
     'SuhosinDisableWarning',
-    'McryptDisableWarning');
-// settings from this form are treated specially, see prefs_forms.php and user_preferences.lib.php
+    'McryptDisableWarning',
+    'ReservedWordDisableWarning');
+// settings from this form are treated specially,
+// see prefs_forms.php and user_preferences.lib.php
 $forms['Features']['Developer'] = array(
     'Error_Handler/display',
     'Error_Handler/gather',
@@ -60,67 +65,71 @@ $forms['Sql_queries']['Sql_queries'] = array(
     'Confirm',
     'QueryHistoryMax',
     'IgnoreMultiSubmitErrors',
-    'VerboseMultiSubmit',
     'MaxCharactersInDisplayedSQL',
     'EditInWindow',
     //'QueryWindowWidth', // overridden in theme
     //'QueryWindowHeight',
-    'QueryWindowDefTab');
+    'QueryWindowDefTab',
+    'RetainQueryBox',
+    'CodemirrorEnable');
 $forms['Sql_queries']['Sql_box'] = array(
     'SQLQuery/Edit',
     'SQLQuery/Explain',
     'SQLQuery/ShowAsPHP',
     'SQLQuery/Validate',
     'SQLQuery/Refresh');
-$forms['Left_frame']['Left_frame'] = array(
-    'LeftFrameLight',
-    'LeftDisplayLogo',
-    'LeftLogoLink',
-    'LeftLogoLinkWindow',
-    'LeftPointerEnable');
-$forms['Left_frame']['Left_databases'] = array(
-    'DisplayDatabasesList',
-    'LeftFrameDBTree',
-    'LeftFrameDBSeparator',
-    'ShowTooltipAliasDB');
-$forms['Left_frame']['Left_tables'] = array(
-    'LeftDisplayTableFilterMinimum',
-    'LeftDefaultTabTable',
-    'LeftFrameTableSeparator',
-    'LeftFrameTableLevel',
-    'ShowTooltip',
-    'ShowTooltipAliasTB');
-$forms['Main_frame']['Startup'] = array(
-    'MainPageIconic',
-    'ShowCreateDb' => ':group',
-        'SuggestDBName',
-        ':group:end',
+$forms['Navi_panel']['Navi_panel'] = array(
+    'NavigationDisplayLogo',
+    'NavigationLogoLink',
+    'NavigationLogoLinkWindow',
+    'NavigationTreePointerEnable',
+    'MaxNavigationItems',
+    'NavigationTreeEnableGrouping',
+    'NavigationTreeDisplayItemFilterMinimum');
+$forms['Navi_panel']['Navi_databases'] = array(
+    'NavigationTreeDisplayDbFilterMinimum',
+    'NavigationTreeDbSeparator');
+$forms['Navi_panel']['Navi_tables'] = array(
+    'NavigationTreeDefaultTabTable',
+    'NavigationTreeTableSeparator',
+    'NavigationTreeTableLevel',
+);
+$forms['Main_panel']['Startup'] = array(
+    'ShowCreateDb',
     'ShowStats',
     'ShowServerInfo');
-$forms['Main_frame']['Browse'] = array(
-    'NavigationBarIconic',
-    'PropertiesIconic',
+$forms['Main_panel']['DbStructure'] = array(
+    'ShowDbStructureCreation',
+    'ShowDbStructureLastUpdate',
+    'ShowDbStructureLastCheck');
+$forms['Main_panel']['TableStructure'] = array(
+    'HideStructureActions');
+$forms['Main_panel']['Browse'] = array(
+    'TableNavigationLinksMode',
+    'ActionLinksMode',
     'ShowAll',
     'MaxRows',
     'Order',
     'DisplayBinaryAsHex',
     'BrowsePointerEnable',
     'BrowseMarkerEnable',
+    'GridEditing',
+    'SaveCellsAtOnce',
+    'ShowDisplayDirection',
     'RepeatCells',
     'LimitChars',
-    'ModifyDeleteAtLeft',
-    'ModifyDeleteAtRight',
-    'DefaultDisplay');
-$forms['Main_frame']['Edit'] = array(
+    'RowActionLinks',
+    'DefaultDisplay',
+    'RememberSorting');
+$forms['Main_panel']['Edit'] = array(
     'ProtectBinary',
     'ShowFunctionFields',
     'ShowFieldTypesInDataEditView',
     'InsertRows',
     'ForeignKeyDropdownOrder',
-    'ForeignKeyMaxLimit',
-    'DefaultPropDisplay');
-$forms['Main_frame']['Tabs'] = array(
-    'LightTabs',
+    'ForeignKeyMaxLimit');
+$forms['Main_panel']['Tabs'] = array(
+    'TabsMode',
     'DefaultTabServer',
     'DefaultTabDatabase',
     'DefaultTabTable');
@@ -148,14 +157,8 @@ $forms['Import']['Csv'] = array(
         'Import/ldi_enclosed',
         'Import/ldi_escaped',
         'Import/ldi_local_option');
-$forms['Import']['Microsoft_Office'] = array(
-    ':group:' . __('Excel 97-2003 XLS Workbook'),
-        'Import/xls_col_names',
-        ':group:end',
-    ':group:' . __('Excel 2007 XLSX Workbook'),
-        'Import/xlsx_col_names');
 $forms['Import']['Open_Document'] = array(
-    ':group:' . __('Open Document Spreadsheet'),
+    ':group:' . __('OpenDocument Spreadsheet'),
         'Import/ods_col_names',
         'Import/ods_empty_rows',
         'Import/ods_recognize_percentages',
@@ -242,24 +245,16 @@ $forms['Export']['Latex'] = array(
         'Export/latex_data_label',
         'Export/latex_null');
 $forms['Export']['Microsoft_Office'] = array(
-    ':group:' . __('Excel 97-2003 XLS Workbook'),
-        'Export/xls_null',
-        'Export/xls_columns',
-        ':group:end',
-    ':group:' . __('Excel 2007 XLSX Workbook'),
-        'Export/xlsx_null',
-        'Export/xlsx_columns',
-        ':group:end',
     ':group:' . __('Microsoft Word 2000'),
         'Export/htmlword_structure_or_data',
         'Export/htmlword_null',
         'Export/htmlword_columns');
 $forms['Export']['Open_Document'] = array(
-    ':group:' . __('Open Document Spreadsheet'),
+    ':group:' . __('OpenDocument Spreadsheet'),
         'Export/ods_columns',
         'Export/ods_null',
         ':group:end',
-    ':group:' . __('Open Document Text'),
+    ':group:' . __('OpenDocument Text'),
         'Export/odt_structure_or_data',
         ':group:' . __('Structure'),
             'Export/odt_relation',

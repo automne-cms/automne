@@ -226,8 +226,9 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string the text with plugins tags adapted for fckeditor
 	  * @access public
 	  */
-	public function static parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
-		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $this);
+	public static function  parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
+		$obj = new StdClass();
+		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION,$obj);
 		$wantedTags = $modulesTreatment->getWantedTags();
 		//create regular expression on wanted tags
 		$exp = '';
@@ -286,7 +287,8 @@ class CMS_textEditor extends CMS_grandFather
 			$text = str_replace(array_keys($replace),$replace,$text);
 			$text = sensitiveIO::decodeWindowsChars($text);
 			
-			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, new CMS_date());
+			$date = new CMS_date();
+			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $date);
 			$wantedTags = $modulesTreatment->getWantedTags();
 			
 			//create regular expression on wanted tags

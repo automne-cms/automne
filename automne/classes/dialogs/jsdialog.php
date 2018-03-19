@@ -202,7 +202,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * reload tree frame
 	  *
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
 	public function reloadTree()
 	{
@@ -224,6 +224,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * usually to remove a frame (ie modules or tree frame)
 	  *
 	  * @return void
+	  * @access public
 	  */
 	public function reloadAll()
 	{
@@ -242,7 +243,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * reload modules frame
 	  *
 	  * @return void
-	  * @access private
+	  * @access public
 	  */
 	public function reloadModules()
 	{
@@ -260,9 +261,8 @@ class CMS_JSDialog extends CMS_grandFather
 	  * reload modules frame
 	  *
 	  * @return void
-	  * @access private
 	  */
-	protected function changeColor()
+	public function changeColor()
 	{
 		$changeColor = '
 			<!-- Switch color of an item -->

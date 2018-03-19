@@ -917,6 +917,7 @@ class CMS_dialog extends CMS_JSDialog
 	  *
 	  * @param string message
 	  * @return void
+	  * @access public
 	  */
 	public function setActionMessage($message)
 	{
@@ -928,7 +929,8 @@ class CMS_dialog extends CMS_JSDialog
 	  *
 	  * @param string message
 	  * @return void
-	  */
+	  * @access public
+	 */
 	public function getActionMessage()
 	{
 		return $this->_actionMessage;

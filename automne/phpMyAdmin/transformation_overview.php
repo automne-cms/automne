@@ -2,21 +2,18 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @package phpMyAdmin
+ * @package PhpMyAdmin
  */
-
-/**
- * Don't display the page heading
- * @ignore
- */
-define('PMA_DISPLAY_HEADING', 0);
 
 /**
  * Gets some core libraries and displays a top message if required
  */
 require_once './libraries/common.inc.php';
-require_once './libraries/header.inc.php';
 require_once './libraries/transformations.lib.php';
+
+$response = PMA_Response::getInstance();
+$header   = $response->getHeader();
+$header->disableMenu();
 
 $types = PMA_getAvailableMIMEtypes();
 ?>
@@ -34,13 +31,8 @@ foreach ($types['mimetype'] as $key => $mimetype) {
 }
 ?>
 <br />
-<i>(<?php echo __('MIME types printed in italics do not have a separate transformation function'); ?>)</i>
-
-<br />
-<br />
-<br />
 <h2><?php echo __('Available transformations'); ?></h2>
-<table border="0" width="90%">
+<table width="90%">
 <thead>
 <tr>
     <th><?php echo __('Browser transformation'); ?></th>
@@ -51,16 +43,7 @@ foreach ($types['mimetype'] as $key => $mimetype) {
 <?php
 $odd_row = true;
 foreach ($types['transformation'] as $key => $transform) {
-    $func = strtolower(str_ireplace('.inc.php', '', $types['transformation_file'][$key]));
-    require './libraries/transformations/' . $types['transformation_file'][$key];
-    $funcname = 'PMA_transformation_' . $func . '_info';
-    $desc = '<i>' . sprintf(__('No description is available for this transformation.<br />Please ask the author what %s does.'), 'PMA_transformation_' . $func . '()') . '</i>';
-    if (function_exists($funcname)) {
-        $desc_arr = $funcname();
-        if (isset($desc_arr['info'])) {
-            $desc = $desc_arr['info'];
-        }
-    }
+    $desc = PMA_getTransformationDescription($types['transformation_file'][$key]);
     ?>
     <tr class="<?php echo $odd_row ? 'odd' : 'even'; ?>">
         <td><?php echo $transform; ?></td>
@@ -73,9 +56,3 @@ foreach ($types['transformation'] as $key => $transform) {
 </tbody>
 </table>
 
-<?php
-/**
- * Displays the footer
- */
-require './libraries/footer.inc.php';
-?>

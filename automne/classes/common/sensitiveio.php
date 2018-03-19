@@ -467,10 +467,7 @@ class SensitiveIO extends CMS_grandFather
 		}
 		//encode nodes array in utf-8 if needed
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-			$func = create_function('&$data,$key', '$data = is_string($data) ? io::utf8Encode($data) : $data;');
-			if ($func) {
-				array_walk_recursive($datas, $func);
-			}
+			array_walk_recursive($datas,array('SensitiveIO','utf8EncodeIfString'));
 		}
 		return json_encode($datas);
 	}
@@ -729,6 +726,15 @@ class SensitiveIO extends CMS_grandFather
 		return  strtr(utf8_encode($text), $cp1252Map);
 	}
 	
+
+	public static function utf8EncodeIfString(&$text) {
+		if(is_string($text)){
+			return $text = static::utf8Encode($text);
+		}else{
+			return $text;	
+		}
+	}
+
 	/**
 	  * Decode String from UTF8 to latin1 with support of cp1252 charset
 	  *

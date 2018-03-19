@@ -1115,7 +1115,7 @@ class CMS_file extends CMS_grandFather
 		if ($unit == 'M') {
 			return io::substr($max, 0, -1);
 		} elseif($unit == 'K') {
-			return $max * 1024;
+			return io::substr($max, 0, -1) * 1024;
 		}
 	}
 

@@ -169,9 +169,13 @@ foreach ($websites as $id => $website) {
 $availableWebsites = sensitiveIO::jsonEncode($availableWebsites);
 $selectedWebsites = sensitiveIO::jsonEncode($selectedWebsites);
 
+if(htmlspecialchars($templateDefinition)){
+	$templateDefinition = htmlspecialchars($templateDefinition);
+}
+
 //DEFINITION TAB
 $content = '
-<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.htmlspecialchars($templateDefinition).'</textarea>';
+<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.$templateDefinition.'</textarea>';
 $view->setContent($content);
 
 $title = sensitiveIO::isPositiveInteger($templateId) ? $cms_language->getJSMessage(MESSAGE_PAGE_TEMPLATE).' '.$label : $cms_language->getJSMessage(MESSAGE_PAGE_CREATE_TEMPLATE);

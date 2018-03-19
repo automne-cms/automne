@@ -37,7 +37,6 @@ Allow from all
 <IfModule mod_env.c>
 	<IfModule mod_xsendfile.c>
 		XSendFile On
-		XSendFileAllowAbove On
 		SetEnv ATM-X-SENDFILE 1
 	</IfModule>
 </IfModule>

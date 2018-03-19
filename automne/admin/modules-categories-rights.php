@@ -272,7 +272,7 @@ if (!$item) {
 				CLEARANCE_MODULE_EDIT => 'right-edit',
 				CLEARANCE_MODULE_MANAGE => 'right-manage',
 			);
-			while (list($msg, $v) = each($modules_clearances)) {
+			while (list($msg, $v) = @each($modules_clearances)) {
 				$content .= '<th width="30" align="center"><div class="'.$pictos[$v].'" title="'.io::htmlspecialchars($cms_language->getMessage($msg)).'"></div></th>';
 			}
 			$content .= '

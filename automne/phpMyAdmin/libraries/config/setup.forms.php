@@ -19,7 +19,7 @@
  * End group blocks with:
  * ':group:end'
  *
- * @package phpMyAdmin-setup
+ * @package PhpMyAdmin-Setup
  */
 
 $forms = array();
@@ -42,9 +42,6 @@ $forms['Servers']['Server_auth'] = array('Servers' => array(1 => array(
         'user',
         'password',
         ':group:end',
-    ':group:' . __('Cookie authentication'),
-        'auth_swekey_config' => './swekey.conf',
-        ':group:end',
     ':group:' . __('HTTP authentication'),
         'auth_http_realm',
         ':group:end',
@@ -60,23 +57,25 @@ $forms['Servers']['Server_config'] = array('Servers' => array(1 => array(
     'DisableIS',
     'AllowDeny/order',
     'AllowDeny/rules',
-    'ShowDatabasesCommand',
-    'CountTables')));
+    'ShowDatabasesCommand')));
 $forms['Servers']['Server_pmadb'] = array('Servers' => array(1 => array(
     'pmadb' => 'phpmyadmin',
+    'controlhost',
     'controluser',
     'controlpass',
-    'verbose_check',
-    'bookmarktable' => 'pma_bookmark',
-    'relation' => 'pma_relation',
-    'userconfig' => 'pma_userconfig',
-    'table_info' => 'pma_table_info',
-    'column_info' => 'pma_column_info',
-    'history' => 'pma_history',
-    'tracking' => 'pma_tracking',
-    'table_coords' => 'pma_table_coords',
-    'pdf_pages' => 'pma_pdf_pages',
-    'designer_coords' => 'pma_designer_coords')));
+    'bookmarktable' => 'pma__bookmark',
+    'relation' => 'pma__relation',
+    'userconfig' => 'pma__userconfig',
+    'table_info' => 'pma__table_info',
+    'column_info' => 'pma__column_info',
+    'history' => 'pma__history',
+    'recent' => 'pma__recent',
+    'table_uiprefs' => 'pma__table_uiprefs',
+    'tracking' => 'pma__tracking',
+    'table_coords' => 'pma__table_coords',
+    'pdf_pages' => 'pma__pdf_pages',
+    'designer_coords' => 'pma__designer_coords',
+    'MaxTableUiprefs' => 100)));
 $forms['Servers']['Server_tracking'] = array('Servers' => array(1 => array(
     'tracking_version_auto_create',
     'tracking_default_statements',
@@ -111,6 +110,7 @@ $forms['Features']['Page_titles'] = array(
     'TitleDatabase',
     'TitleServer');
 $forms['Features']['Warnings'] = array(
+    'ServerLibraryDifference_DisableWarning',
     'PmaNoRelation_DisableWarning',
     'SuhosinDisableWarning',
     'McryptDisableWarning');
@@ -120,19 +120,19 @@ $forms['Features']['Developer'] = array(
     'Error_Handler/gather',
     'DBG/sql');
 $forms['Features']['Other_core_settings'] = array(
-    'AjaxEnable',
     'VersionCheck',
     'NaturalOrder',
     'InitialSlidersState',
-    'ErrorIconic',
-    'ReplaceHelpImg',
     'MaxDbList',
     'MaxTableList',
+    'NumRecentTables',
+    'ShowHint',
     'OBGzip',
     'PersistentConnections',
     'ExecTimeLimit',
     'MemoryLimit',
     'SkipLockedTables',
+    'DisableMultiTableMaintenance',
     'UseDbSearch',
     'AllowThirdPartyFraming');
 $forms['Sql_queries']['Sql_queries'] = array(
@@ -141,12 +141,13 @@ $forms['Sql_queries']['Sql_queries'] = array(
     'QueryHistoryDB',
     'QueryHistoryMax',
     'IgnoreMultiSubmitErrors',
-    'VerboseMultiSubmit',
     'MaxCharactersInDisplayedSQL',
     'EditInWindow',
     //'QueryWindowWidth', // overridden in theme
     //'QueryWindowHeight',
-    'QueryWindowDefTab');
+    'QueryWindowDefTab',
+    'RetainQueryBox',
+    'CodemirrorEnable');
 $forms['Sql_queries']['Sql_box'] = array('SQLQuery' => array(
     'Edit',
     'Explain',
@@ -157,53 +158,57 @@ $forms['Sql_queries']['Sql_validator'] = array('SQLValidator' => array(
     'use',
     'username',
     'password'));
-$forms['Left_frame']['Left_frame'] = array(
-    'LeftFrameLight',
-    'LeftDisplayLogo',
-    'LeftLogoLink',
-    'LeftLogoLinkWindow',
-    'LeftPointerEnable');
-$forms['Left_frame']['Left_servers'] = array(
-    'LeftDisplayServers',
+$forms['Navi_panel']['Navi_panel'] = array(
+    'NavigationDisplayLogo',
+    'NavigationLogoLink',
+    'NavigationLogoLinkWindow',
+    'NavigationTreePointerEnable',
+    'MaxNavigationItems',
+    'NavigationTreeEnableGrouping',
+    'NavigationTreeDisplayItemFilterMinimum');
+$forms['Navi_panel']['Navi_servers'] = array(
+    'NavigationDisplayServers',
     'DisplayServersList');
-$forms['Left_frame']['Left_databases'] = array(
-    'DisplayDatabasesList',
-    'LeftFrameDBTree',
-    'LeftFrameDBSeparator',
-    'ShowTooltipAliasDB');
-$forms['Left_frame']['Left_tables'] = array(
-    'LeftDisplayTableFilterMinimum',
-    'LeftDefaultTabTable',
-    'LeftFrameTableSeparator',
-    'LeftFrameTableLevel',
-    'ShowTooltip',
-    'ShowTooltipAliasTB');
-$forms['Main_frame']['Startup'] = array(
-    'MainPageIconic',
-    'ShowCreateDb' => ':group',
-        'SuggestDBName',
-        ':group:end',
+$forms['Navi_panel']['Navi_databases'] = array(
+    'NavigationTreeDbSeparator');
+$forms['Navi_panel']['Navi_tables'] = array(
+    'NavigationTreeDefaultTabTable',
+    'NavigationTreeTableSeparator',
+    'NavigationTreeTableLevel',
+);
+$forms['Main_panel']['Startup'] = array(
+    'ShowCreateDb',
     'ShowStats',
     'ShowServerInfo',
-    'ShowPhpInfo',
     'ShowChgPassword');
-$forms['Main_frame']['Browse'] = array(
-    'NavigationBarIconic',
+$forms['Main_panel']['DbStructure'] = array(
+    'ShowDbStructureCreation',
+    'ShowDbStructureLastUpdate',
+    'ShowDbStructureLastCheck');
+$forms['Main_panel']['TableStructure'] = array(
+    'HideStructureActions');
+$forms['Main_panel']['Browse'] = array(
+    'TableNavigationLinksMode',
     'ShowAll',
     'MaxRows',
     'Order',
     'BrowsePointerEnable',
     'BrowseMarkerEnable',
+    'GridEditing',
+    'SaveCellsAtOnce',
+    'ShowDisplayDirection',
     'RepeatCells',
     'LimitChars',
-    'ModifyDeleteAtLeft',
-    'ModifyDeleteAtRight',
-    'DefaultDisplay');
-$forms['Main_frame']['Edit'] = array(
+    'RowActionLinks',
+    'DefaultDisplay',
+    'RememberSorting');
+$forms['Main_panel']['Edit'] = array(
     'ProtectBinary',
     'ShowFunctionFields',
     'ShowFieldTypesInDataEditView',
     'CharEditing',
+    'MinSizeForInputField',
+    'MaxSizeForInputField',
     'CharTextareaCols',
     'CharTextareaRows',
     'TextareaCols',
@@ -211,15 +216,14 @@ $forms['Main_frame']['Edit'] = array(
     'LongtextDoubleTextarea',
     'InsertRows',
     'ForeignKeyDropdownOrder',
-    'ForeignKeyMaxLimit',
-    'DefaultPropDisplay');
-$forms['Main_frame']['Tabs'] = array(
-    'LightTabs',
-    'PropertiesIconic',
+    'ForeignKeyMaxLimit');
+$forms['Main_panel']['Tabs'] = array(
+    'TabsMode',
+    'ActionLinksMode',
     'DefaultTabServer',
     'DefaultTabDatabase',
     'DefaultTabTable',
-	'QueryWindowDefTab');
+    'QueryWindowDefTab');
 $forms['Import']['Import_defaults'] = array('Import' => array(
     'format',
     'charset',
@@ -245,14 +249,8 @@ $forms['Import']['Csv'] = array('Import' => array(
         'ldi_escaped',
         'ldi_local_option',
         ':group:end'));
-$forms['Import']['Microsoft_Office'] = array('Import' => array(
-    ':group:' . __('Excel 97-2003 XLS Workbook'),
-        'xls_col_names',
-        ':group:end',
-    ':group:' . __('Excel 2007 XLSX Workbook'),
-        'xlsx_col_names'));
 $forms['Import']['Open_Document'] = array('Import' => array(
-    ':group:' . __('Open Document Spreadsheet'),
+    ':group:' . __('OpenDocument Spreadsheet'),
         'ods_col_names',
         'ods_empty_rows',
         'ods_recognize_percentages',
@@ -340,24 +338,16 @@ $forms['Export']['Latex'] = array('Export' => array(
         'latex_data_label',
         'latex_null'));
 $forms['Export']['Microsoft_Office'] = array('Export' => array(
-    ':group:' . __('Excel 97-2003 XLS Workbook'),
-        'xls_null',
-        'xls_columns',
-        ':group:end',
-    ':group:' . __('Excel 2007 XLSX Workbook'),
-        'xlsx_null',
-        'xlsx_columns',
-        ':group:end',
     ':group:' . __('Microsoft Word 2000'),
         'htmlword_structure_or_data',
         'htmlword_null',
         'htmlword_columns'));
 $forms['Export']['Open_Document'] = array('Export' => array(
-    ':group:' . __('Open Document Spreadsheet'),
+    ':group:' . __('OpenDocument Spreadsheet'),
         'ods_columns',
         'ods_null',
         ':group:end',
-    ':group:' . __('Open Document Text'),
+    ':group:' . __('OpenDocument Text'),
         'odt_structure_or_data',
         ':group:' . __('Structure'),
             'odt_relation',
