@@ -726,6 +726,15 @@ class SensitiveIO extends CMS_grandFather
 		return  strtr(utf8_encode($text), $cp1252Map);
 	}
 	
+
+	public static function utf8EncodeIfString(&$text) {
+		if(is_string($text)){
+			return $text = static::utf8Encode($text);
+		}else{
+			return $text;	
+		}
+	}
+
 	/**
 	  * Decode String from UTF8 to latin1 with support of cp1252 charset
 	  *

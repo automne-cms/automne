@@ -173,7 +173,10 @@ $selectedTemplates = sensitiveIO::jsonEncode($selectedTemplates);
 
 //DEFINITION TAB
 $rowDefinition = ($rowDefinition) ? $rowDefinition : '<row></row>';
-$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.htmlspecialchars($rowDefinition).'</textarea>';
+if(htmlspecialchars($rowDefinition)){
+	$rowDefinition = htmlspecialchars($rowDefinition);
+}
+$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.$rowDefinition.'</textarea>';
 $view->setContent($content);
 
 $title = sensitiveIO::sanitizeJSString((sensitiveIO::isPositiveInteger($rowId)) ? $cms_language->getMessage(MESSAGE_PAGE_ROW).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_ROW_CREATE));
