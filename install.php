@@ -2779,7 +2779,7 @@ class CMS_tar_file_install extends CMS_archive_install
 					} else {
 						if ($this->options['overwrite'] == 0 && file_exists($file['name'])) {
 							$this->_raiseError(get_class($this)." : extract_files : {$file['name']} already exists.");
-						} else
+						} else {
 							if ($new = fopen($file['name'], "wb")) {
 								@fwrite($new, @fread($fp, $file['stat'][7]));
 								@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
