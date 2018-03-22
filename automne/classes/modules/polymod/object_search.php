@@ -1681,7 +1681,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 */
 	public function isLastResult() {
-		return $this->_objectsCount == sizeof($this->_sortedResultsIds);
+		return count($this->_sortedResultsIds) == 0;
 	}
 	
 	/**
