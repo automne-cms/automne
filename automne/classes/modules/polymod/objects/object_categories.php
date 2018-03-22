@@ -991,7 +991,7 @@ class CMS_object_categories extends CMS_object_common
 			$structure['labels'] = '';
 			$structure['ids'] = '';
 			$structure['count'] = '';
-			$structure['values'] = '';
+			$structure['values'] = array();
 			$structure['values']['n']['id'] = '';
 			$structure['values']['n']['label'] = '';
 			$structure['values']['n']['file'] = '';
