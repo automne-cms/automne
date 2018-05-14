@@ -188,6 +188,10 @@ if (!function_exists('mb_substr') || !function_exists('mb_convert_encoding')) {
 }
 //XAPIAN
 if (class_exists('CMS_module_ase')) {
+	$expectedXapianVersion = '1.4.5';
+	if(defined(CMS_ASE_XAPIAN_VERSION)){
+		$expectedXapianVersion = CMS_ASE_XAPIAN_VERSION;
+	}
 	$xapianVersion = '';
 	if (function_exists('xapian_version_string')) {
 		$xapianVersion = xapian_version_string();
@@ -197,7 +201,7 @@ if (class_exists('CMS_module_ase')) {
 		$content .= '<li class="atm-pic-cancel">Error, Xapian extension not installed (only needed if ASE module is installed)</li>';
 	}
 	if ($xapianVersion) {
-		if (version_compare($xapianVersion, '1.0.2') === -1) {
+		if (version_compare($xapianVersion, $expectedXapianVersion) === -1) {
 			$content .= '<li class="atm-pic-cancel">Error, Xapian version ('.$xapianVersion.') not match (1.0.2 minimum)</li>';
 		} else {
 			$content .= '<li class="atm-pic-ok">Xapian extension OK ('.$xapianVersion.')</li>';
@@ -360,7 +364,7 @@ if ($cliOk) {
 	}
 	//XAPIAN
 	if (class_exists('CMS_module_ase')) {
-		$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'xapian_version_string\') ? xapian_version_string() : (function_exists(\'flint_open\') ? version_string() : \'none\'));"',$error);
+		$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'xapian_version_string\') ? xapian_version_string() : (function_exists(\'chert_open\') ? version_string() : \'none\'));"',$error);
 		if ($error || $return == 'none') {
 			$content .= '<li class="atm-pic-cancel">Error, Xapian extension not installed '.$error.' '.$return.'</li>';
 		} else {
