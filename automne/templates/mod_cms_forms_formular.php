@@ -93,8 +93,11 @@ if ($form->getID() && $form->isPublic()) {
 		echo '<div class="cms_forms_msg">'.evalPolymodVars($cms_forms_msg[$form->getID()], $cms_language->getCode()).'</div>';
 	}
 	if($form->getAttribute('protected')) {
-		// add Recaptcha JS
-		echo '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl='.$cms_language->getCode().'"></script>';
+
+		if(!defined('CAPTCHA_CUSTOM') || !CAPTCHA_CUSTOM){
+			// add Recaptcha JS
+			echo '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl='.$cms_language->getCode().'"></script>';
+		}
 	}
 }
 ?>

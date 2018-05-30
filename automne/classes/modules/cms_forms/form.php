@@ -1009,10 +1009,19 @@ class CMS_forms_formular extends CMS_grandFather {
 	}
 
 	private function addCaptchaToSource($source){
-        $sourceStart = strstr($source, 'type="submit"', true);
-        $pos = strrpos($sourceStart, '<tr');
-        $html = '<tr><td><td><div class="container-recaptcha"><div class="g-recaptcha" data-sitekey="' . $this->getReCaptchaSiteKey() . '"></div></div></td></tr>';
-        return substr_replace($source, $html, $pos, 0);
+        if(!defined('CAPTCHA_CUSTOM') || !CAPTCHA_CUSTOM){
+			//If not custom is asked
+	        $sourceStart = strstr($source, 'type="submit"', true);
+	        $pos = strrpos($sourceStart, '<tr');
+	        $html = '<tr><td><td><div class="container-recaptcha"><div class="g-recaptcha" data-sitekey="' . $this->getReCaptchaSiteKey() . '"></div></div></td></tr>';
+	        return substr_replace($source, $html, $pos, 0);
+	    }else{
+	    	//Else we only give empty container
+	        $sourceStart = strstr($source, 'type="submit"', true);
+	        $pos = strrpos($sourceStart, '<div');
+	        $html = '<div id="container-recaptcha-' . $this->getID() . '" data-sitekey="' . $this->getReCaptchaSiteKey() . '"></div>';
+	        return substr_replace($source, $html, $pos, 0);
+	    }
 	}
 
 	private function getReCaptchaSiteKey(){
