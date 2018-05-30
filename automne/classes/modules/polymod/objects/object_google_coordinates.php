@@ -144,8 +144,8 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @access public
 	  */
 	public function getHTMLAdmin($fieldID, $language, $prefixName) {
-		if(!defined(GOOGLE_MAP_API_KEY)){
-			CMS_grandFather::raiseError("GOOGLE_MAP_API_KEY is not defined ! (it can be defined in standard_rc.xml in modules folder)");
+		if(!GOOGLE_MAP_API_KEY){
+			CMS_grandFather::raiseError("GOOGLE_MAP_API_KEY is not defined ! (it can be defined in standard_rc.xml in modules folder)".GOOGLE_MAP_API_KEY);
 		}
 
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
@@ -166,7 +166,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 		
 		//Add on change listeners to update image
 		$return['items'][1]['listeners'] = $return['items'][2]['listeners'] = array('change' => sensitiveIO::sanitizeJSString('function(el){
-			Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&zoom=15&size=600x200&markers=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&sensor=false" />\');
+			Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="//maps.google.com/maps/api/staticmap?center=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&zoom=15&size=600x200&markers=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&sensor=false&key='.GOOGLE_MAP_API_KEY.'" />\');
 		}', false, false));
 		
 		
@@ -198,7 +198,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 						if (status == \'OK\') {
 							Ext.getCmp(\''.$ids.'-long\').setValue(results[0].geometry.location.lng());
 							Ext.getCmp(\''.$ids.'-lat\').setValue(results[0].geometry.location.lat());
-							Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&zoom=15&size=600x200&markers=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&sensor=false" />\');
+							Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="//maps.google.com/maps/api/staticmap?center=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&zoom=15&size=600x200&markers=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&sensor=false&key='.GOOGLE_MAP_API_KEY.'" />\');
 						} else {
 							Automne.message.popup({
 								msg: 				String.format(\''.$language->getJsMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
@@ -244,7 +244,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 							if (map.gmarks && map.gmarks[0]) {
 								Ext.getCmp(\''.$ids.'-long\').setValue(map.gmarks[0].getPosition().lng());
 								Ext.getCmp(\''.$ids.'-lat\').setValue(map.gmarks[0].getPosition().lat());
-								Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
+								Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="//maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false&key='.GOOGLE_MAP_API_KEY.'" />\');
 							}
 						}}
 		            });
@@ -275,7 +275,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 									if (map.gmarks && map.gmarks[0]) {
 										Ext.getCmp(\''.$ids.'-long\').setValue(map.gmarks[0].getPosition().lng());
 										Ext.getCmp(\''.$ids.'-lat\').setValue(map.gmarks[0].getPosition().lat());
-										Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
+										Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="//maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false&key='.GOOGLE_MAP_API_KEY.'" />\');
 									}
 								}}
 				          	});
@@ -289,7 +289,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 				if (typeof google == \'undefined\' || typeof google.maps == \'undefined\' || typeof google.maps.Map == \'undefined\') {
 					var script = document.createElement("script");
 				    script.type = "text/javascript";
-				    script.src = "http://maps.google.com/maps/api/js?callback=isNaN&key='.GOOGLE_MAP_API_KEY.'";
+				    script.src = "//maps.google.com/maps/api/js?callback=isNaN&key='.GOOGLE_MAP_API_KEY.'";
 				    document.body.appendChild(script);
 				}
 			}', false, false)),
@@ -298,7 +298,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 		$return['items'][3] = array(
 			'xtype'		=> 'panel',
 			'border'	=> false,
-			'html'		=> '<div id="'.$ids.'-view" style="overflow:auto;text-align:center;">'.($this->_subfieldValues[0]->getValue() && $this->_subfieldValues[1]->getValue() ? '<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&zoom=15&size=600x200&markers='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&sensor=false" />' : '').'</div>',
+			'html'		=> '<div id="'.$ids.'-view" style="overflow:auto;text-align:center;">'.($this->_subfieldValues[0]->getValue() && $this->_subfieldValues[1]->getValue() ? '<img style="border:1px solid #C0C7CB;" src="//maps.google.com/maps/api/staticmap?center='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&zoom=15&size=600x200&markers='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&sensor=false&key='.GOOGLE_MAP_API_KEY.'" />' : '').'</div>',
 		);
 		return $return;
 	}
@@ -426,7 +426,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 			return false;
 		}
 		
-		$sGoogleApiUrl = sprintf('http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false&language=%s',
+		$sGoogleApiUrl = sprintf('//maps.google.com/maps/api/geocode/json?address=%s&sensor=false&language=%s&key='.GOOGLE_MAP_API_KEY.'',
 						 urlencode(io::sanitizeAsciiString($address, ' ')),
 						 $language->getCode()
 					);
