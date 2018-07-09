@@ -45,6 +45,32 @@ class CMS_oembed extends CMS_grandFather
 			'scheme'	=> array('http://*.flickr.com/*')
 		),
 		array(
+			'api'		=> 'http://www.vimeo.com/api/oembed.json',
+			'scheme'	=> array('http://www.vimeo.com/*', 'http://www.vimeo.com/groups/*/*')
+		),
+		array(
+			'api'		=> 'http://www.polleverywhere.com/services/oembed/',
+			'scheme'	=> array('http://www.polleverywhere.com/polls/*', 'http://www.polleverywhere.com/multiple_choice_polls/*', 'http://www.polleverywhere.com/free_text_polls/*')
+		),
+		array(
+			'api'		=> 'https://www.dailymotion.com/services/oembed',
+			'scheme'	=> array('http://www.dailymotion.com/video/*')
+		),
+		array(
+			'api'		=> 'https://api.instagram.com/oembed',
+			'scheme'	=> array(
+				'http://instagram.com/p/*',
+				'http://instagr.am/p/*',
+				'http://www.instagram.com/p/*',
+				'http://www.instagr.am/p/*',
+				'https://instagram.com/p/*',
+				'https://instagr.am/p/*',
+				'https://www.instagram.com/p/*',
+				'https://www.instagr.am/p/*',
+			)
+		),
+		/*
+		array(
 			'api'		=> 'http://lab.viddler.com/services/oembed/',
 			'scheme'	=> array('http://*.viddler.com/*')
 		),
@@ -61,18 +87,6 @@ class CMS_oembed extends CMS_grandFather
 			'scheme'	=> array('http://www.hulu.com/watch/*')
 		),
 		array(
-			'api'		=> 'http://www.vimeo.com/api/oembed.json',
-			'scheme'	=> array('http://www.vimeo.com/*', 'http://www.vimeo.com/groups/*/*')
-		),
-		array(
-			'api'		=> 'http://www.polleverywhere.com/services/oembed/',
-			'scheme'	=> array('http://www.polleverywhere.com/polls/*', 'http://www.polleverywhere.com/multiple_choice_polls/*', 'http://www.polleverywhere.com/free_text_polls/*')
-		),
-		array(
-			'api'		=> 'https://www.dailymotion.com/services/oembed',
-			'scheme'	=> array('http://www.dailymotion.com/video/*')
-		),
-		array(
 			'api'		=> 'http://www.screenr.com/api/oembed.json',
 			'scheme'	=> array('http://*screenr.com/*')
 		),
@@ -80,6 +94,7 @@ class CMS_oembed extends CMS_grandFather
 			'api'		=> 'http://www.scribd.com/services/oembed',
 			'scheme'	=> array('http://*scribd.com/*')
 		),
+		*/
 	);
 	
 	/**
