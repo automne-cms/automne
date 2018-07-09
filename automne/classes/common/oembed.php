@@ -49,10 +49,6 @@ class CMS_oembed extends CMS_grandFather
 			'scheme'	=> array('http://www.vimeo.com/*', 'http://www.vimeo.com/groups/*/*')
 		),
 		array(
-			'api'		=> 'http://www.polleverywhere.com/services/oembed/',
-			'scheme'	=> array('http://www.polleverywhere.com/polls/*', 'http://www.polleverywhere.com/multiple_choice_polls/*', 'http://www.polleverywhere.com/free_text_polls/*')
-		),
-		array(
 			'api'		=> 'https://www.dailymotion.com/services/oembed',
 			'scheme'	=> array('http://www.dailymotion.com/video/*')
 		),
@@ -70,6 +66,10 @@ class CMS_oembed extends CMS_grandFather
 			)
 		),
 		/*
+		array(
+			'api'		=> 'http://www.polleverywhere.com/services/oembed/',
+			'scheme'	=> array('http://www.polleverywhere.com/polls/*', 'http://www.polleverywhere.com/multiple_choice_polls/*', 'http://www.polleverywhere.com/free_text_polls/*')
+		),
 		array(
 			'api'		=> 'http://lab.viddler.com/services/oembed/',
 			'scheme'	=> array('http://*.viddler.com/*')
