@@ -637,9 +637,9 @@ class CMS_view extends CMS_grandFather
 	  *
 	  * @param string $tag : the new content tag name to use for current display mode
 	  * @return boolean
-	  * @access private
+	  * @access public
 	  */
-	protected function setContentTag($tag) {
+	public function setContentTag($tag) {
 		if (!$tag) {
 			return false;
 		}

@@ -63,7 +63,10 @@ class CMS_XMLTag_xml extends CMS_XMLTag
 		if(io::request(\'out\') == \'xml\') {
 			$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($this->_attributes['what'], false, false, array($this, 'encloseWithPrepareVar')).'", $replace);
 			if ($xmlCondition) {
-				$func = create_function("","return (".$xmlCondition.");");
+				//$func = create_function("","return (".$xmlCondition.");");
+				$func = function() use ($xmlCondition) {
+					return $xmlCondition;
+				};
 				if ($func && $func()) {
 					$cms_view = CMS_view::getInstance();
 					$content = $replace = \'\';';
