@@ -64,6 +64,10 @@ if ($form->getID() && $form->isPublic()) {
 		}
 
 		if($form->getAttribute('protected') && isset($captchaError) && $captchaError === true){
+			$captchaErrorLabel = CMS_i18n::getTranslation("RECAPTCHA_ERROR",$cms_language->getCode());
+			if(!$captchaErrorLabel){
+				$captchaErrorLabel = 'Captcha Error';
+			}
 			$cms_forms_error_msg[$form->getID()] .= '<li>Captcha Error</li>';
 		}
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
