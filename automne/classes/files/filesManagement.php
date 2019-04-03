@@ -1109,13 +1109,35 @@ class CMS_file extends CMS_grandFather
 		*/
 	public static function getMaxUploadFileSize($unit = 'M') {
 		$max = (int) ((int) ini_get("upload_max_filesize") < (int) ini_get("post_max_size")) ? ini_get("upload_max_filesize") : ini_get("post_max_size");
-		if(preg_match('/^(\d+)M/', $max,$matches)){
+		
+		$configuredUnit = 'M';
+		if(preg_match('/^(\d*)(M|G|K)/', $max,$matches)){
 			$max = $matches[1];
+			$configuredUnit = $matches[2];
+			switch ($configuredUnit) {
+				case 'G':
+					$max = $max * 1024;
+					break;
+				case  'K':
+					$max = $max / 1024;
+					break;
+				default:
+					# code...
+					break;
+			}
 		}
-		if ($unit == 'M') {
-			return io::substr($max, 0, -1);
-		} elseif($unit == 'K') {
-			return io::substr($max, 0, -1) * 1024;
+
+		switch ($unit) {
+			case 'G':
+				return $max / 1024;
+				break;
+			case  'K':
+				return $max * 1024;
+				break;
+			case  'M':
+			default:
+				return $max;
+				break;
 		}
 	}
 
