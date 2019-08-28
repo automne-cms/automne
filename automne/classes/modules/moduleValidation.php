@@ -220,7 +220,7 @@ class CMS_moduleValidation extends CMS_module
 				$q = new CMS_query($sql);
 
 				while ($id = $q->getValue("id")) {
-					$item = CMS_module::getResourceByID($id);
+					$item = $this->getResourceByID($id);
 					$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_CONTENT, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage($this->getModuleValidationLabel("edition"), false, $this->_codename));
@@ -253,7 +253,7 @@ class CMS_moduleValidation extends CMS_module
 				";
 				$q = new CMS_query($sql);
 				while ($id = $q->getValue("id")) {
-					$item = CMS_module::getResourceByID($id);
+					$item = $this->getResourceByID($id);
 					$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_LOCATION, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage($this->getModuleValidationLabel("locationChange"), false, $this->_codename));
@@ -409,7 +409,7 @@ class CMS_moduleValidation extends CMS_module
 
 					$language = $user->getLanguage();
 
-					$item = CMS_module::getResourceByID($id);
+					$item = $this->getResourceByID($id);
 					$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_LOCATION, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage($this->getModuleValidationLabel("locationChange"), false, $this->_codename));
@@ -435,7 +435,7 @@ class CMS_moduleValidation extends CMS_module
 
 					$editions = $r["editions"];//RESOURCE_EDITION_CONTENT
 
-					$item = CMS_module::getResourceByID($id);
+					$item = $this->getResourceByID($id);
 					$validation = new CMS_resourceValidation($this->_codename, $editions, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage($this->getModuleValidationLabel("edition"), false, $this->_codename));
