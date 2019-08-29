@@ -524,9 +524,9 @@ class CMS_module extends CMS_grandFather
 						break;
 					}
 					//first, move edited
-					CMS_module_standard::_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, $locationTo);
+					$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, $locationTo);
 					//then delete public
-					CMS_module_standard::_changeDataLocation($resource, RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_DEVNULL);
+					$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_DEVNULL);
 				} else {
 					if ($resource->getProposedLocation() == RESOURCE_LOCATION_USERSPACE) {
 						//Pushing resource to USERSPACE
@@ -540,10 +540,10 @@ class CMS_module extends CMS_grandFather
 						}
 						//if resource was published, copy data to public table
 						if ($resource->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED) {
-							CMS_module_standard::_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_PUBLIC, true);
+							$this->_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_PUBLIC, true);
 						}
 						//move data from its location to edited
-						CMS_module_standard::_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_EDITED);
+						$this->_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_EDITED);
 					} else {
 						//the move entirely takes place outside of USERSPACE (archived to deleted hopefully)
 						switch ($resource->getLocation()) {
@@ -562,14 +562,14 @@ class CMS_module extends CMS_grandFather
 							$locationTo = RESOURCE_DATA_LOCATION_DELETED;
 							break;
 						}
-						CMS_module_standard::_changeDataLocation($resource, $locationFrom, $locationTo);
+						$this->_changeDataLocation($resource, $locationFrom, $locationTo);
 					}
 				}
 
 				$resource->validateProposedLocation();
 			} else {
 				$all_editions = CMS_resourceStatus::getAllEditions();
-				CMS_module_standard::_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_PUBLIC, true);
+				$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_PUBLIC, true);
 
 
 				foreach ($all_editions as $aEdition) {
@@ -606,7 +606,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	protected static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
+	protected function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
 	{
 		if (!($resource instanceof CMS_resource)) {
 			CMS_grandFather::raiseError("Resource is not a CMS_resource");

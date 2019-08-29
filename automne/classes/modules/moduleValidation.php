@@ -496,7 +496,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
+	protected function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
 	{
 		if (is_array($this->_resourceInfo) && $this->_resourceInfo) {
 			if (!parent::_changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly)) {

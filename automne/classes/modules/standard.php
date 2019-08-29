@@ -1377,7 +1377,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
+	protected function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
 		if (!parent::_changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly)) {
 			return false;
 		}
@@ -1699,6 +1699,9 @@ class CMS_module_standard extends CMS_module
 						'echo "\t".\'<base href="\'.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
 						//Append base code
+						if(class_exist('CMS_module_rgpd')){
+							$headCode .= '<?php echo CMS_module_rgpd::check(); ?>'."\n";
+						}
 						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
 					break;
 					case "body":
