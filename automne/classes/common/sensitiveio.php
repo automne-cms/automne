@@ -96,7 +96,13 @@ class SensitiveIO extends CMS_grandFather
 			}
 			return $value;
 		}
-		return htmlspecialchars($value);
+		return static::securizeString($value);
+	}
+
+	public static function securizeString($string){
+		//prevent XSS Vulnerability by adding <script> tag in $_GET,$_POST,...
+		$string = preg_replace('/(<script[^<]*<\/script>)/', '', $string);
+		return $string;
 	}
 
 	/**
