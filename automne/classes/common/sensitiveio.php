@@ -101,7 +101,7 @@ class SensitiveIO extends CMS_grandFather
 
 	public static function securizeString($string){
 		//prevent XSS Vulnerability by adding <script> tag in $_GET,$_POST,...
-		$string = preg_replace('/(<script[^<]*<\/script>)/', '', $string);
+		//$string = preg_replace('/(<script[^<]*<\/script>)/', '', $string);
 		return $string;
 	}
 
