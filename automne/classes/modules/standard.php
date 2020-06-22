@@ -1699,7 +1699,7 @@ class CMS_module_standard extends CMS_module
 						'echo "\t".\'<base href="\'.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
 						//Append base code
-						if(class_exist('CMS_module_rgpd')){
+						if(class_exists('CMS_module_rgpd')){
 							$headCode .= '<?php echo CMS_module_rgpd::check(); ?>'."\n";
 						}
 						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
