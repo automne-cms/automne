@@ -35,6 +35,6 @@ To update, download and apply successively the corresponding(s) patches availabl
 
 ## Contribute
 
-We"re a small team and there is a lot of work to do, you can help us by submitting [https://github.com/automne-cms/automne/issues](issues on Github) or send pull requests.
+We're a small team and there is a lot of work to do, you can help us by submitting [https://github.com/automne-cms/automne/issues/](issues on Github) or send pull requests.
 
 Automne administration interface is available in English and French only, we can provide you a PO file if you need to translate Automne in another language.
